@@ -4,8 +4,8 @@ import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 
 // Importing Firebase into project
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+const { initializeApp } = require('firebase/app');
+const { getFirestore, collection, addDoc, getDocs } = require('firebase/firestore');
 
 // config firebase through env variables
 const firebaseConfig = {
@@ -19,8 +19,49 @@ const firebaseConfig = {
 };
 
 // Initializes Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
+
+const addAda = async () => {
+  try {
+    const docRef = await addDoc(collection(db, "users"), {
+      first: "Ada",
+      last: "Lovelace",
+      born: 1815
+    });
+    console.log("Document written with ID: ", docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+}
+
+const addAlan = async () => {
+  try {
+    const docRef = await addDoc(collection(db, "users"), {
+      first: "Alan",
+      middle: "Mathison",
+      last: "Turing",
+      born: 1912
+    });
+
+    console.log("Document written with ID: ", docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+}
+
+const getUsers = async () => {
+  const querySnapshot = await getDocs(collection(db, "users"));
+  querySnapshot.forEach((doc) => {
+    const docInfo = {
+      first: doc.data().first,
+      middle: doc.data().middle,
+      last: doc.data().last,
+      born: doc.data().born,
+    }
+    console.log(`user ID: ${doc.id} => user data: ${docInfo.first}, ${docInfo.middle || 'no middle name'}, ${docInfo.last}`);
+  });
+}
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -126,6 +167,15 @@ export default function Home() {
               with&nbsp;Vercel.
             </p>
           </a>
+          <button
+            onClick={addAda}
+          >Add Ada</button>
+          <button
+            onClick={addAlan}
+          >Add Alan</button>
+          <button
+            onClick={getUsers}
+          >get users</button>
         </div>
       </main>
     </>
