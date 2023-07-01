@@ -8,7 +8,7 @@ export default function LoginPage() {
         email: "",
         password: "",
     });
-    const signupPageDesign = {
+    const loginPageDesign = {
         width: '100vw',
         height: '100vh',
         display: 'flex',
@@ -29,11 +29,11 @@ export default function LoginPage() {
     const submitDesign ={
         marginTop: '20px',
     };
-    const signup = 'WELCOME BACK!';
+    const login = 'WELCOME BACK!';
     return (
-        <Box sx={signupPageDesign}>
+        <Box sx={loginPageDesign}>
             <QuotedLarge />
-            <LandingPageText text={signup} />
+            <LandingPageText text={login} />
             <Box sx={formDesign}>
                 <FormControl>
                     <form style={formStyle}>
