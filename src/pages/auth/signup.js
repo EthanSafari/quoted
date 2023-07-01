@@ -1,7 +1,6 @@
-import ContainedButton from "@/src/components/ContainedButton";
 import LandingPageText from "@/src/components/LandingPageText";
 import QuotedLarge from "@/src/components/QuotedLarge";
-import { Box, Button, Container, FormControl, TextField } from "@mui/material";
+import { Box, Button, FormControl, TextField } from "@mui/material";
 import { useState } from "react";
 
 export default function SignUpPage() {
@@ -31,11 +30,11 @@ export default function SignUpPage() {
     const submitDesign ={
         marginTop: '20px',
     };
-    const signup = 'SIGNUP';
+    const signup = 'JOIN THE FREE SPEECH PLATFORM';
     return (
         <Box sx={signupPageDesign}>
             <QuotedLarge />
-            {/* <LandingPageText text={signup} /> */}
+            <LandingPageText text={signup} />
             <Box sx={formDesign}>
                 <FormControl>
                     <form style={formStyle}>
