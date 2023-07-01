@@ -57,7 +57,7 @@ export default function Messages() {
         setMessageList(refreshMessages());
     }, [setMessageList]);
     return (
-        <Box>
+        <Box mt={6} mb={8}>
             <List>
                 {messageList.map(({ primary, secondary, person }, index) => (
                     <ListItem button key={index + person}>
