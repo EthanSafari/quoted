@@ -54,6 +54,7 @@ export default function LoginPage() {
                             variant="contained"
                             fullWidth
                             sx={submitDesign}
+                            type="submit"
                         >
                             LOGIN
                         </Button>

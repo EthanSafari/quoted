@@ -30,7 +30,13 @@ export default function SignUpPage() {
     const submitDesign ={
         marginTop: '20px',
     };
-    const signup = 'JOIN THE FREE SPEECH PLATFORM';
+    const onChange = (e) => {
+        setSignupForm((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
+    };
+    const signup = 'THINK FREELY, QUOTE FREELY';
     return (
         <Box sx={signupPageDesign}>
             <QuotedLarge />
@@ -41,26 +47,39 @@ export default function SignUpPage() {
                         <TextField
                             required
                             label="EMAIL"
-                            defaultValue={signupForm.email}
+                            defaultValue={""}
+                            value={signupForm.email}
                             fullWidth
+                            name="email"
+                            type="email"
+                            onChange={onChange}
                         />
                         <TextField
                             required
                             label="PASSWORD"
-                            defaultValue={signupForm.password}
+                            defaultValue={""}
+                            value={signupForm.password}
                             fullWidth
                             margin="normal"
+                            name="password"
+                            type="password"
+                            onChange={onChange}
                         />
                         <TextField
                             required
                             label="CONFIRM PASSWORD"
-                            defaultValue={signupForm.confirmPassword}
+                            defaultValue={""}
+                            value={signupForm.confirmPassword}
                             fullWidth
+                            name="confirmPassword"
+                            type="password"
+                            onChange={onChange}
                         />
                         <Button
                             variant="contained"
                             fullWidth
                             sx={submitDesign}
+                            type="submit"
                         >
                             SIGNUP
                         </Button>
