@@ -1,6 +1,8 @@
 // Importing Firebase into project
-const { initializeApp } = require('firebase/app');
-const { getFirestore } = require('firebase/firestore');
+import { initializeApp, getApp, getApps } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
 
 // config firebase through env variables
 const firebaseConfig = {
@@ -13,6 +15,15 @@ const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID
 };
 
-// Initializes Firebase
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
+// Initializes Firebase for Server Side Rendering
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const firestoreDb = getFirestore(app);
+const auth = getAuth(app);
+const storage = getStorage(app);
+
+export {
+    app,
+    firestoreDb,
+    auth,
+    storage
+};
