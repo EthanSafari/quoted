@@ -8,7 +8,7 @@ const quotedTitle = Advent_Pro({
     weight: ['600'],
 });
 
-export default function Navbar() {
+export default function Navbar({ openMenu, setOpenMenu }) {
     const toolbarDesign = {
         display: 'flex',
         justifyContent: 'space-between'
@@ -23,7 +23,10 @@ export default function Navbar() {
         <AppBar>
             <Toolbar sx={toolbarDesign}>
                 <IconButton size="medium" color="secondary">
-                    <MenuIcon fontSize="large" />
+                    <MenuIcon
+                    fontSize="large"
+                    onClick={() => setOpenMenu(!openMenu)}
+                    />
                 </IconButton>
                 <Box sx={logoDesign}>
                     <Typography variant="h4" className={quotedTitle.className}>

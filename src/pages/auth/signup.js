@@ -3,12 +3,14 @@ import QuotedLarge from "@/src/components/QuotedLarge";
 import { auth } from "@/src/firebase/clientApp";
 import { Box, Button, FormControl, TextField, Typography } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { FIREBASE_ERRORS } from "@/src/firebase/errors";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function SignUpPage() {
+    const router = useRouter();
     const [signupForm, setSignupForm] = useState({
         email: "",
         password: "",
@@ -21,6 +23,12 @@ export default function SignUpPage() {
         loading,
         error,
     ] = useCreateUserWithEmailAndPassword(auth);
+
+    useEffect(() => {
+        if (user)
+            router.push('/');
+    }, [user]);
+
     const signupPageDesign = {
         width: '100vw',
         height: '100vh',
@@ -57,6 +65,7 @@ export default function SignUpPage() {
         justifyContent: 'center',
         fontSize: '14px',
     };
+    
     const onChange = (e) => {
         setSignupForm((prev) => ({
             ...prev,
@@ -146,7 +155,7 @@ export default function SignUpPage() {
                     HAVE AN ACCOUNT?
                 </Typography>
                 <Link href={'/auth/login'} style={linkText}>
-                    LOGIN HERE
+                    LOG IN HERE
                 </Link>
             </Box>
         </Box>

@@ -1,7 +1,7 @@
 import { Box, ButtonGroup, Container } from "@mui/material";
-import LandingPageText from "../components/LandingPageText";
-import ContainedButton from "../components/ContainedButton";
-import QuotedLarge from "../components/QuotedLarge";
+import LandingPageText from "./LandingPageText";
+import ContainedButton from "./ContainedButton";
+import QuotedLarge from "./QuotedLarge";
 
 export default function LandingPage() {
     const landingDesign = {
@@ -21,8 +21,8 @@ export default function LandingPage() {
     };
     const welcome = 'WELCOME TO';
     const slogan = 'A PLACE TO SHARE YOUR THOUGHTS...';
-    const loginText = 'LOGIN';
-    const signupText = 'SIGNUP';
+    const loginText = 'LOG IN';
+    const signupText = 'SIGN UP';
     return (
         <Box sx={landingDesign}>
             <Box>

@@ -5,10 +5,12 @@ import { FIREBASE_ERRORS } from "@/src/firebase/errors";
 import { LoadingButton } from "@mui/lab";
 import { Box, Button, FormControl, TextField, Typography } from "@mui/material";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 
 export default function LoginPage() {
+    const router = useRouter();
     const [loginForm, setLoginForm] = useState({
         email: "",
         password: "",
@@ -19,6 +21,12 @@ export default function LoginPage() {
         loading,
         error,
     ] = useSignInWithEmailAndPassword(auth);
+
+    useEffect(() => {
+        if (user)
+            router.push('/');
+    }, [user]);
+    
     const loginPageDesign = {
         width: '100vw',
         height: '100vh',
@@ -108,14 +116,14 @@ export default function LoginPage() {
                             sx={submitDesign}
                             type="submit"
                         >
-                            LOGIN
+                            LOG IN
                         </Button>
                         ) : (
                             <LoadingButton
                             fullWidth
                             sx={submitDesign}
                         >
-                            LOGIN
+                            LOG IN
                         </LoadingButton>
                         )}
                         <Typography align="center" sx={linkSentance}>
