@@ -1,11 +1,12 @@
 import LandingPageText from "@/src/components/LandingPageText";
 import QuotedLarge from "@/src/components/QuotedLarge";
 import { auth } from "@/src/firebase/clientApp";
-import { Box, Button, FormControl, List, ListItem, TextField, Typography } from "@mui/material";
+import { Box, Button, FormControl, TextField, Typography } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { FIREBASE_ERRORS } from "@/src/firebase/errors";
+import Link from "next/link";
 
 export default function SignUpPage() {
     const [signupForm, setSignupForm] = useState({
@@ -45,6 +46,15 @@ export default function SignUpPage() {
         color: 'red',
         fontSize: '12px',
     };
+    const linkSentance = {
+        marginTop: '15px',
+        fontSize: '14px',
+    };
+    const linkText = {
+        textDecoration: 'none',
+        color: '#3366cc',
+        marginLeft: '3px',
+    };
     const onChange = (e) => {
         setSignupForm((prev) => ({
             ...prev,
@@ -65,7 +75,7 @@ export default function SignUpPage() {
         });
         setFormError('');
     };
-    const signup = 'THINK FREELY, QUOTE FREELY';
+    const signup = 'THINK FREELY, SHARE FREELY';
     return (
         <Box sx={signupPageDesign}>
             <QuotedLarge />
@@ -75,9 +85,9 @@ export default function SignUpPage() {
                     <form style={formStyle} onSubmit={onSubmit}>
                         {(formError || error) && (
                             <Typography
-                            align="center"
-                            gutterBottom
-                            sx={errorText}
+                                align="center"
+                                gutterBottom
+                                sx={errorText}
                             >
                                 {formError
                                     || FIREBASE_ERRORS[error.message].toUpperCase()}
@@ -130,6 +140,12 @@ export default function SignUpPage() {
                         )}
                     </form>
                 </FormControl>
+                <Typography align="center" sx={linkSentance}>
+                    HAVE AN ACCOUNT?
+                    <Link href={'/auth/login'} style={linkText}>
+                        LOGIN HERE
+                    </Link>
+                </Typography>
             </Box>
         </Box>
     )
