@@ -1,7 +1,11 @@
 import LandingPageText from "@/src/components/LandingPageText";
 import QuotedLarge from "@/src/components/QuotedLarge";
-import { Box, Button, FormControl, TextField } from "@mui/material";
-import { useState } from "react";
+import { auth } from "@/src/firebase/clientApp";
+import { Box, Button, FormControl, List, ListItem, TextField, Typography } from "@mui/material";
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useEffect, useState } from "react";
+import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { FIREBASE_ERRORS } from "@/src/firebase/errors";
 
 export default function SignUpPage() {
     const [signupForm, setSignupForm] = useState({
@@ -9,6 +13,13 @@ export default function SignUpPage() {
         password: "",
         confirmPassword: ""
     });
+    const [formError, setFormError] = useState('');
+    const [
+        createUserWithEmailAndPassword,
+        user,
+        loading,
+        error,
+    ] = useCreateUserWithEmailAndPassword(auth);
     const signupPageDesign = {
         width: '100vw',
         height: '100vh',
@@ -27,14 +38,32 @@ export default function SignUpPage() {
         width: '70vw',
         maxWidth: '270px',
     };
-    const submitDesign ={
+    const submitDesign = {
         marginTop: '20px',
+    };
+    const errorText = {
+        color: 'red',
+        fontSize: '12px',
     };
     const onChange = (e) => {
         setSignupForm((prev) => ({
             ...prev,
             [e.target.name]: e.target.value,
         }));
+    };
+    const onSubmit = (e) => {
+        e.preventDefault();
+        if (signupForm.password !== signupForm.confirmPassword) {
+            setFormError('PASSWORDS DO NOT MATCH');
+            return;
+        };
+        createUserWithEmailAndPassword(signupForm.email, signupForm.password);
+        setSignupForm({
+            email: "",
+            password: "",
+            confirmPassword: ""
+        });
+        setFormError('');
     };
     const signup = 'THINK FREELY, QUOTE FREELY';
     return (
@@ -43,11 +72,20 @@ export default function SignUpPage() {
             <LandingPageText text={signup} />
             <Box sx={formDesign}>
                 <FormControl>
-                    <form style={formStyle}>
+                    <form style={formStyle} onSubmit={onSubmit}>
+                        {(formError || error) && (
+                            <Typography
+                            align="center"
+                            gutterBottom
+                            sx={errorText}
+                            >
+                                {formError
+                                    || FIREBASE_ERRORS[error.message].toUpperCase()}
+                            </Typography>
+                        )}
                         <TextField
                             required
                             label="EMAIL"
-                            defaultValue={""}
                             value={signupForm.email}
                             fullWidth
                             name="email"
@@ -58,7 +96,6 @@ export default function SignUpPage() {
                             required
                             label="PASSWORD"
                             defaultValue={""}
-                            value={signupForm.password}
                             fullWidth
                             margin="normal"
                             name="password"
@@ -68,21 +105,29 @@ export default function SignUpPage() {
                         <TextField
                             required
                             label="CONFIRM PASSWORD"
-                            defaultValue={""}
                             value={signupForm.confirmPassword}
                             fullWidth
                             name="confirmPassword"
                             type="password"
                             onChange={onChange}
                         />
-                        <Button
-                            variant="contained"
-                            fullWidth
-                            sx={submitDesign}
-                            type="submit"
-                        >
-                            SIGNUP
-                        </Button>
+                        {!loading ? (
+                            <Button
+                                variant="contained"
+                                fullWidth
+                                sx={submitDesign}
+                                type="submit"
+                            >
+                                SIGNUP
+                            </Button>
+                        ) : (
+                            <LoadingButton
+                                fullWidth
+                                sx={submitDesign}
+                            >
+                                SIGNUP
+                            </LoadingButton>
+                        )}
                     </form>
                 </FormControl>
             </Box>

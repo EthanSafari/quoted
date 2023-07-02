@@ -35,8 +35,8 @@ export default function LandingPage() {
                     orientation="vertical"
                     size="large"
                 >
-                    <ContainedButton text={loginText} />
-                    <ContainedButton text={signupText} />
+                    <ContainedButton text={loginText} link={'/auth/login'} />
+                    <ContainedButton text={signupText} link={'/auth/signup'} />
                 </ButtonGroup>
             </Container>
         </Box>
