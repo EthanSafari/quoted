@@ -61,6 +61,10 @@ export default function LoginPage() {
             [e.target.name]: e.target.value,
         }));
     };
+    const onSubmit = (e) => {
+        e.preventDefault();
+        signInWithEmailAndPassword(loginForm.email, loginForm.password);
+    };
     const login = 'WELCOME BACK!';
     return (
         <Box sx={loginPageDesign}>
@@ -68,7 +72,7 @@ export default function LoginPage() {
             <LandingPageText text={login} />
             <Box sx={formDesign}>
                 <FormControl>
-                    <form style={formStyle}>
+                    <form style={formStyle} onSubmit={onSubmit}>
                         {(error) && (
                             <Typography
                                 align="center"
@@ -103,7 +107,6 @@ export default function LoginPage() {
                             fullWidth
                             sx={submitDesign}
                             type="submit"
-                            onClick={() => signInWithEmailAndPassword(loginForm.email, loginForm.password)}
                         >
                             LOGIN
                         </Button>
