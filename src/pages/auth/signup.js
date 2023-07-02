@@ -53,7 +53,9 @@ export default function SignUpPage() {
     const linkText = {
         textDecoration: 'none',
         color: '#3366cc',
-        marginLeft: '3px',
+        display: 'flex',
+        justifyContent: 'center',
+        fontSize: '14px',
     };
     const onChange = (e) => {
         setSignupForm((prev) => ({
@@ -142,10 +144,10 @@ export default function SignUpPage() {
                 </FormControl>
                 <Typography align="center" sx={linkSentance}>
                     HAVE AN ACCOUNT?
-                    <Link href={'/auth/login'} style={linkText}>
-                        LOGIN HERE
-                    </Link>
                 </Typography>
+                <Link href={'/auth/login'} style={linkText}>
+                    LOGIN HERE
+                </Link>
             </Box>
         </Box>
     )
