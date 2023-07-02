@@ -130,14 +130,14 @@ export default function SignUpPage() {
                                 sx={submitDesign}
                                 type="submit"
                             >
-                                SIGNUP
+                                SIGN UP
                             </Button>
                         ) : (
                             <LoadingButton
                                 fullWidth
                                 sx={submitDesign}
                             >
-                                SIGNUP
+                                SIGN UP
                             </LoadingButton>
                         )}
                     </form>
