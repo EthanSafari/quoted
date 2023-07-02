@@ -1,15 +1,17 @@
-import Messages from '../components/Messages'
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+import LoggedinHomepage from "../components/LoggedInHomepage";
+import { auth } from "../firebase/clientApp";
+import { useAuthState } from 'react-firebase-hooks/auth';import LandingPage from "./landing";
+;
 
 export default function Home() {
+  const [user, loading, error] = useAuthState(auth);
   return (
     <>
-     <div>
-      <Navbar />
-      <Messages />
-      <Footer />
-     </div>
+      {user ? (
+        <LoggedinHomepage />
+      ) : (
+        <LandingPage />
+      )}
     </>
   )
-}
+};
