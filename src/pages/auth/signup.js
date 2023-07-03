@@ -87,7 +87,6 @@ export default function SignUpPage() {
         setFormError('');
     };
     const signup = 'THINK FREELY, SHARE FREELY';
-    console.log(signupForm)
     return (
         <Box sx={signupPageDesign}>
             <QuotedLarge />
