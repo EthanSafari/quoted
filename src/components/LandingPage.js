@@ -2,6 +2,7 @@ import { Box, ButtonGroup, Container } from "@mui/material";
 import LandingPageText from "./LandingPageText";
 import ContainedButton from "./ContainedButton";
 import QuotedLarge from "./QuotedLarge";
+import OAuthButtons from "./OAuthButtons";
 
 export default function LandingPage() {
     const landingDesign = {
@@ -38,6 +39,9 @@ export default function LandingPage() {
                     <ContainedButton text={loginText} link={'/auth/login'} />
                     <ContainedButton text={signupText} link={'/auth/signup'} />
                 </ButtonGroup>
+            </Container>
+            <Container>
+                <OAuthButtons />
             </Container>
         </Box>
     )

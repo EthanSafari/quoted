@@ -65,20 +65,20 @@ export default function SignUpPage() {
         justifyContent: 'center',
         fontSize: '14px',
     };
-    
+
     const onChange = (e) => {
         setSignupForm((prev) => ({
             ...prev,
             [e.target.name]: e.target.value,
         }));
     };
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
         if (signupForm.password !== signupForm.confirmPassword) {
             setFormError('PASSWORDS DO NOT MATCH');
             return;
         };
-        createUserWithEmailAndPassword(signupForm.email, signupForm.password);
+        await createUserWithEmailAndPassword(signupForm.email, signupForm.password);
         setSignupForm({
             email: "",
             password: "",
@@ -87,6 +87,7 @@ export default function SignUpPage() {
         setFormError('');
     };
     const signup = 'THINK FREELY, SHARE FREELY';
+    console.log(signupForm)
     return (
         <Box sx={signupPageDesign}>
             <QuotedLarge />
@@ -101,7 +102,7 @@ export default function SignUpPage() {
                                 sx={errorText}
                             >
                                 {formError
-                                    || FIREBASE_ERRORS[error.message].toUpperCase()}
+                                    || FIREBASE_ERRORS[error.message]}
                             </Typography>
                         )}
                         <TextField
@@ -117,6 +118,7 @@ export default function SignUpPage() {
                             required
                             label="PASSWORD"
                             defaultValue={""}
+                            value={signupForm.password}
                             fullWidth
                             margin="normal"
                             name="password"
