@@ -102,7 +102,7 @@ export default function SignUpPage() {
                                 sx={errorText}
                             >
                                 {formError
-                                    || FIREBASE_ERRORS[error.message]}
+                                    || FIREBASE_ERRORS[error.message].toUpperCase()}
                             </Typography>
                         )}
                         <TextField
