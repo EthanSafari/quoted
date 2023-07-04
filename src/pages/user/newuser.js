@@ -15,8 +15,8 @@ export default function FirestoreUser() {
     const [err, setErr] = useState("");
     const [newUser, setNewUser] = useState({
         username: "",
-        profilePhotoUrl: user?.photoURL || "",
-        description: "",
+        profilePhotoUrl: user.photoURL || "",
+        // description: "",
         createdAt: serverTimestamp(),
     });
     const onChange = (e) => {
@@ -103,7 +103,7 @@ export default function FirestoreUser() {
                             onChange={onChange}
                             margin="normal"
                         />
-                        <TextField
+                        {/* <TextField
                             label="DESCRIPTION"
                             value={newUser.description}
                             fullWidth
@@ -111,7 +111,7 @@ export default function FirestoreUser() {
                             type="text"
                             onChange={onChange}
                             multiline
-                        />
+                        /> */}
                         {err.length > 0 && (
                             <Typography>
                                 {err}
