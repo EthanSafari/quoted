@@ -1,8 +1,8 @@
 import { Box, ButtonGroup, Container } from "@mui/material";
-import LandingPageText from "../components/LandingPageText";
-import ContainedButton from "../components/ContainedButton";
-import QuotedLarge from "../components/QuotedLarge";
-import OAuthButtons from "../components/OAuthButtons";
+import LandingPageText from "./LandingPageText";
+import ContainedButton from "./ContainedButton";
+import QuotedLarge from "./QuotedLarge";
+import OAuthButtons from "./OAuthButtons";
 
 export default function LandingPage() {
     const landingDesign = {

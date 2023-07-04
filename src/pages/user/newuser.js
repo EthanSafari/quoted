@@ -39,7 +39,7 @@ export default function FirestoreUser() {
             setErr(error.message);
             return;
         }
-        router.push('/home');
+        router.push('/');
     };
     const boxDesign = {
         width: '100vw',
