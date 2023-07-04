@@ -1,7 +1,9 @@
 import SendOutlinedIcon from '@mui/icons-material/Send';
 import { BottomNavigation, IconButton, TextField } from "@mui/material";
+import { useState } from 'react';
 
 export default function Footer() {
+    const [userMessage, setUserMessage] = useState('');
     const footerDesign = {
         position: 'fixed',
         bottom: 0,
@@ -13,29 +15,33 @@ export default function Footer() {
         alignItems: 'center'
     };
     const textboxDesign = {
-        width: '65vw'
+        width: '80vw'
     };
     const sendButtonDesign = {
-
+        // marginLeft: '2px'
     };
+    console.log(userMessage)
     return (
         <BottomNavigation
             sx={footerDesign}
         >
-            <TextField
-                label="Have a thought?"
-                variant="standard"
-                multiline
-                sx={textboxDesign}
-            />
-            <IconButton
-                color='secondary'
-            >
-                <SendOutlinedIcon
-                    fontSize='large'
-                    sx={sendButtonDesign}
+            <form>
+                <TextField
+                    label="Care to Share?"
+                    multiline
+                    sx={textboxDesign}
+                    value={userMessage}
+                    onChange={e => setUserMessage(e.target.value)}
                 />
-            </IconButton>
+                <IconButton
+                    color='secondary'
+                >
+                    <SendOutlinedIcon
+                        fontSize='large'
+                        sx={sendButtonDesign}
+                    />
+                </IconButton>
+            </form>
         </BottomNavigation>
     );
 }

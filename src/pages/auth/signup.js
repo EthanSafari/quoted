@@ -15,7 +15,6 @@ export default function SignUpPage() {
         email: "",
         password: "",
         confirmPassword: "",
-        username: "",
     });
     const [formError, setFormError] = useState('');
     const [
@@ -75,18 +74,22 @@ export default function SignUpPage() {
     };
     const onSubmit = async (e) => {
         e.preventDefault();
-        if (signupForm.password !== signupForm.confirmPassword) {
-            setFormError('PASSWORDS DO NOT MATCH');
+        try {
+            setFormError('');
+            if (signupForm.password !== signupForm.confirmPassword)
+                throw new Error('PASSWORDS DO NOT MATCH');
+            await createUserWithEmailAndPassword(signupForm.email, signupForm.password);
+            if (error) throw new Error(FIREBASE_ERRORS[error.message]);
+        } catch (error) {
+            setFormError(error.message);
             return;
-        };
-        await createUserWithEmailAndPassword(signupForm.email, signupForm.password);
+        }
         setSignupForm({
             email: "",
             password: "",
             confirmPassword: "",
             username: "",
         });
-        setFormError('');
     };
     const signup = 'THINK FREELY, SHARE FREELY';
     return (
@@ -96,14 +99,13 @@ export default function SignUpPage() {
             <Box sx={formDesign}>
                 <FormControl>
                     <form style={formStyle} onSubmit={onSubmit}>
-                        {(formError || error) && (
+                        {(formError) && (
                             <Typography
                                 align="center"
                                 gutterBottom
                                 sx={errorText}
                             >
-                                {formError
-                                    || FIREBASE_ERRORS[error.message].toUpperCase()}
+                                {formError}
                             </Typography>
                         )}
                         <TextField

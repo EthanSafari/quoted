@@ -16,17 +16,19 @@ export default function LoggedinHomepage() {
   const [updateProfile, updating, updateError] = useUpdateProfile(auth);
   const { pageNumber } = useContext(PageContext);
   useEffect(() => {
-    if (user && !user?.displayName) {
+    if (!user.displayName) {
       const newUserName = user?.email.split('@')[0];
-      const userDocRef = doc(firestoreDb, 'users', newUserName);
+      const userDocRef = doc(firestoreDb, 'users', user?.uid);
       setDoc(userDocRef, {
+        id: user?.uid,
+        email: user.email,
         username: newUserName,
         profilePhotoUrl: user?.photoURL || "",
-        description: "",
+        // description: "",
         createdAt: serverTimestamp(),
       });
       updateProfile({ displayName: newUserName, photoURL: user?.photoURL || "" });
-    }
+    };
   }, []);
   return (
     <>

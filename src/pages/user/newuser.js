@@ -1,4 +1,4 @@
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { addDoc, doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { auth, firestoreDb } from "../../firebase/clientApp";
 import { useAuthState, useUpdateProfile } from "react-firebase-hooks/auth";
@@ -14,10 +14,11 @@ export default function FirestoreUser() {
     const [updateProfile, updating, updateError] = useUpdateProfile(auth);
     const [err, setErr] = useState("");
     const [newUser, setNewUser] = useState({
+        id: user.uid,
         username: "",
+        email: user.email,
         profilePhotoUrl: user.photoURL || "",
-        // description: "",
-        createdAt: serverTimestamp(),
+        createdAt: user.metadata.creationTime,
     });
     const onChange = (e) => {
         setNewUser((prev) => ({
@@ -29,7 +30,7 @@ export default function FirestoreUser() {
         e.preventDefault();
         setErr('');
         try {
-            const userDocRef = doc(firestoreDb, 'users', newUser.username);
+            const userDocRef = doc(firestoreDb, 'users', newUser.id);
             const userDoc = getDoc(userDocRef);
             if ((await userDoc).exists())
                 throw new Error(`${newUser.username} ALREADY EXISTS. PLEASE ENTER A NEW ONE.`);
