@@ -1,6 +1,6 @@
 import LandingPageText from "@/src/components/LandingPageText";
 import QuotedLarge from "@/src/components/QuotedLarge";
-import { auth } from "@/src/firebase/clientApp";
+import { auth, firestoreDb } from "@/src/firebase/clientApp";
 import { Box, Button, FormControl, TextField, Typography } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useEffect, useState } from "react";
@@ -8,13 +8,15 @@ import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { FIREBASE_ERRORS } from "@/src/firebase/errors";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { getDoc, setDoc } from "firebase/firestore";
 
 export default function SignUpPage() {
     const router = useRouter();
     const [signupForm, setSignupForm] = useState({
         email: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        username: "",
     });
     const [formError, setFormError] = useState('');
     const [
@@ -72,6 +74,17 @@ export default function SignUpPage() {
             [e.target.name]: e.target.value,
         }));
     };
+    // const handleCreateUser = async () => {
+    //     const userDocRef = doc(firestoreDb, "users", signupForm.username);
+    //     const userDoc = await getDoc(userDocRef);
+    //     if (userDoc.exists()) {
+    //         setFormError(`SORRY, THE USERNAME ${signupForm.username} IS TAKEN. PLEASE TRY ANOTHER.`);
+    //         return;
+    //     };
+    //     await setDoc(userDocRef {
+
+    //     })
+    // }
     const onSubmit = async (e) => {
         e.preventDefault();
         if (signupForm.password !== signupForm.confirmPassword) {
@@ -82,7 +95,8 @@ export default function SignUpPage() {
         setSignupForm({
             email: "",
             password: "",
-            confirmPassword: ""
+            confirmPassword: "",
+            username: "",
         });
         setFormError('');
     };
@@ -113,6 +127,15 @@ export default function SignUpPage() {
                             type="email"
                             onChange={onChange}
                         />
+                        {/* <TextField
+                            required
+                            label="USERNAME"
+                            value={signupForm.username}
+                            fullWidth
+                            name="username"
+                            type="text"
+                            onChange={onChange}
+                        /> */}
                         <TextField
                             required
                             label="PASSWORD"

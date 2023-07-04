@@ -40,9 +40,9 @@ export default function LandingPage() {
                     <ContainedButton text={signupText} link={'/auth/signup'} />
                 </ButtonGroup>
             </Container>
-            <Container>
+            {/* <Container>
                 <OAuthButtons />
-            </Container>
+            </Container> */}
         </Box>
     )
 }
