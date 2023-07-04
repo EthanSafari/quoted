@@ -1,19 +1,19 @@
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { auth, firestoreDb } from "../../firebase/clientApp";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useAuthState, useUpdateProfile } from "react-firebase-hooks/auth";
 import { Avatar, Box, Button, Container, TextField, Typography } from "@mui/material";
 import LandingPageText from "@/src/components/LandingPageText";
 import { LoadingButton } from "@mui/lab";
 import { useRouter } from "next/router";
+import QuotedLarge from "@/src/components/QuotedLarge";
 
 export default function FirestoreUser() {
     const router = useRouter();
     const [user, loading, error] = useAuthState(auth);
+    const [updateProfile, updating, updateError] = useUpdateProfile(auth);
     const [err, setErr] = useState("");
-    const [newUserLoading, setNewUserLoading] = useState(false);
     const [newUser, setNewUser] = useState({
-        id: user?.uid,
         username: "",
         profilePhotoUrl: user?.photoURL || "",
         description: "",
@@ -27,94 +27,116 @@ export default function FirestoreUser() {
     };
     const handleCreateUser = async (e) => {
         e.preventDefault();
-        const userDocRef = doc(firestoreDb, 'users', newUser.id);
-        const userDoc = getDoc(userDocRef);
-        setNewUserLoading(true);
-        if ((await userDoc).exists())
-            throw new Error(`${newUser.username} ALREADY EXISTS. PLEASE ENTER A NEW ONE.`);
+        setErr('');
         try {
+            const userDocRef = doc(firestoreDb, 'users', newUser.username);
+            const userDoc = getDoc(userDocRef);
+            if ((await userDoc).exists())
+                throw new Error(`${newUser.username} ALREADY EXISTS. PLEASE ENTER A NEW ONE.`);
             await setDoc(userDocRef, newUser);
-        } catch (e) {
-            setErr(e.message);
+            await updateProfile({ displayName: newUser.username, photoURL: newUser.profilePhotoUrl });
+        } catch (error) {
+            setErr(error.message);
+            return;
         }
-        setNewUserLoading(false);
-        router.push('/');
+        router.push('/home');
     };
     const boxDesign = {
         width: '100vw',
         height: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-evenly',
-        alignItems: 'center'
+        justifyContent: 'center',
+        alignItems: 'center',
     };
     const avatarDesign = {
         width: 100,
         height: 100,
+        margin: '15px 0'
+    };
+    const formBoxDesign = {
+        display: 'flex',
+        justifyContent: 'center',
+    };
+    const formDesign = {
+        width: '70vw',
+    };
+    const submitDesign = {
+        marginTop: '20px',
     };
     const introText = 'LETS GET TO KNOW YOU BETTER...';
     return (
         <Box sx={boxDesign}>
-            <LandingPageText text={introText} />
+            <Container>
+                <QuotedLarge />
+                <LandingPageText text={introText} />
+            </Container>
             <Avatar
                 src={newUser.profilePhotoUrl}
                 sx={avatarDesign}
                 alt={newUser.username}
             />
-            {err.length > 0 && (
-                <Typography>
-                    {err}
-                </Typography>
-            )}
-            <Box>
-                <form
-                    onSubmit={handleCreateUser}
+            <Container>
+                <Box
+                    sx={formBoxDesign}
+                    mt={2}
                 >
-                    <TextField
-                        required
-                        label="USERNAME"
-                        value={newUser.username}
-                        fullWidth
-                        name="username"
-                        type="text"
-                        onChange={onChange}
-                    />
-                    <TextField
-                        label="PROFILE PICTURE URL"
-                        value={newUser.profilePhotoUrl}
-                        fullWidth
-                        name="profilePhotoUrl"
-                        type="url"
-                        onChange={onChange}
-                    />
-                    <TextField
-                        label="DESCRIPTION"
-                        value={newUser.description}
-                        fullWidth
-                        name="description"
-                        type="text"
-                        onChange={onChange}
-                        multiline
-                    />
-                        {!newUserLoading ? (
+                    <form
+                        onSubmit={handleCreateUser}
+                        style={formDesign}
+                    >
+                        <TextField
+                            required
+                            label="USERNAME"
+                            value={newUser.username}
+                            fullWidth
+                            name="username"
+                            type="text"
+                            onChange={onChange}
+                        />
+                        <TextField
+                            label="PROFILE PICTURE URL"
+                            value={newUser.profilePhotoUrl}
+                            fullWidth
+                            name="profilePhotoUrl"
+                            type="url"
+                            onChange={onChange}
+                            margin="normal"
+                        />
+                        <TextField
+                            label="DESCRIPTION"
+                            value={newUser.description}
+                            fullWidth
+                            name="description"
+                            type="text"
+                            onChange={onChange}
+                            multiline
+                        />
+                        {err.length > 0 && (
+                            <Typography>
+                                {err}
+                            </Typography>
+                        )}
+                        {!updating ? (
                             <Button
                                 variant="contained"
                                 fullWidth
-                                // sx={submitDesign}
+                                sx={submitDesign}
                                 type="submit"
                             >
-                                SIGN UP
+                                NICE TO MEET YOU!
                             </Button>
                         ) : (
                             <LoadingButton
                                 fullWidth
-                                // sx={submitDesign}
+                                sx={submitDesign}
                             >
-                                SIGN UP
+                                NICE TO MEET YOU!
                             </LoadingButton>
                         )}
-                </form>
-            </Box>
+                    </form>
+                </Box>
+            </Container>
         </Box>
     )
 }

@@ -24,9 +24,9 @@ export default function LoginPage() {
 
     useEffect(() => {
         if (user)
-            router.push('/');
+            router.push('/home');
     }, [user]);
-    
+
     const loginPageDesign = {
         width: '100vw',
         height: '100vh',

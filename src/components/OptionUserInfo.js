@@ -30,7 +30,7 @@ export default function OptionUserInfo() {
                 width: '80vw',
             }}
             >
-                <Chip sx={nameDesign} label={user?.displayName || user.email?.split("@")[0]} />
+                <Chip sx={nameDesign} label={user?.displayName || user?.email?.split("@")[0]} />
             </Divider>
         </Box>
     )

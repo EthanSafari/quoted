@@ -3,7 +3,8 @@ import Link from "next/link"
 
 export default function ContainedButton({ text, link }) {
     const buttonDesign = {
-        maxWidth: '240px',
+        width: '70vw',
+        maxWidth: '300px',
     };
     const linkStyle ={
         textDecoration: 'none',

@@ -1,8 +1,8 @@
 import { Box, ButtonGroup, Container } from "@mui/material";
-import LandingPageText from "./LandingPageText";
-import ContainedButton from "./ContainedButton";
-import QuotedLarge from "./QuotedLarge";
-import OAuthButtons from "./OAuthButtons";
+import LandingPageText from "../components/LandingPageText";
+import ContainedButton from "../components/ContainedButton";
+import QuotedLarge from "../components/QuotedLarge";
+import OAuthButtons from "../components/OAuthButtons";
 
 export default function LandingPage() {
     const landingDesign = {
@@ -16,9 +16,8 @@ export default function LandingPage() {
         display: 'flex',
         justifyContent: 'center',
         flexDirection: 'column',
-        marginTop: '30px',
-        width: '70vw',
-        maxWidth: '240px',
+        marginTop: '50px',
+        alignItems: 'center'
     };
     const welcome = 'WELCOME TO';
     const slogan = 'A PLACE TO SHARE YOUR THOUGHTS...';
@@ -40,9 +39,9 @@ export default function LandingPage() {
                     <ContainedButton text={signupText} link={'/auth/signup'} />
                 </ButtonGroup>
             </Container>
-            {/* <Container>
+            <Container>
                 <OAuthButtons />
-            </Container> */}
+            </Container>
         </Box>
     )
 }
