@@ -1,5 +1,8 @@
+import { firestoreDb } from "@/src/firebase/clientApp";
 import { Box, List, ListItem, ListItemAvatar, Avatar, ListItemText } from "@mui/material";
+import { collection, doc, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import safeJsonStringify from "safe-json-stringify";
 
 const messageExamples = [
     {
@@ -51,23 +54,58 @@ function refreshMessages() {
     );
 }
 
-export default function Messages() {
-    const [messageList, setMessageList] = useState(() => refreshMessages())
-    useEffect(() => {
-        setMessageList(refreshMessages());
-    }, [setMessageList]);
+
+
+export default function Messages({ messageData }) {
+    const [messageList, setMessageList] = useState([]);
+    // console.log(messageList)
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const data = [];
+    //             const snapshot = await getDocs(collection(firestoreDb, "messages"));
+    //             snapshot.forEach((doc) => {
+    //                 data.push(JSON.parse(safeJsonStringify(doc.data())));
+    //             });
+    //             setMessageList(data);
+    //         } catch (error) {
+    //             console.log(error)
+    //         }
+    //     }
+    //     if (!messageData) fetchData();
+    // }, []);
     return (
         <Box mt={6} mb={8}>
             <List>
-                {messageList.map(({ primary, secondary, person }, index) => (
-                    <ListItem button key={index + person}>
+                {messageData?.map(({ message, createdAt }, i) => (
+                    <ListItem button key={i}>
                         <ListItemAvatar>
-                            <Avatar alt="Profile Picture" src={person} />
+                            <Avatar alt="Profile Picture" />
                         </ListItemAvatar>
-                        <ListItemText primary={primary} secondary={secondary} />
+                        <ListItemText primary={createdAt.seconds || createdAt} secondary={message} />
                     </ListItem>
                 ))}
             </List>
         </Box>
     )
 }
+
+export async function getServerSideProps() {
+    try {
+        const data = [];
+        const snapshot = await getDocs(collection(firestoreDb, "messages"));
+        snapshot.forEach((doc) => {
+            data.push(JSON.parse(safeJsonStringify(doc.data())));
+        });
+        console.log(data)
+        return {
+            props: {
+                messageData: data,
+            }
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+// getServerSideProps()

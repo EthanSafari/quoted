@@ -21,7 +21,8 @@ export default function Footer() {
         id: generateFirestoreId(),
         message: '',
         author: user.uid,
-        createdAt: serverTimestamp(),
+        createdAt: new Date().toDateString(),
+        createdAtGoogle: serverTimestamp(),
     });
     // console.log(userMessage)
     const [err, setErr] = useState('');
@@ -52,7 +53,8 @@ export default function Footer() {
             id: generateFirestoreId(),
             message: '',
             author: user.uid,
-            createdAt: serverTimestamp(),
+            createdAt: new Date().toDateString(),
+            createdAtGoogle: serverTimestamp(),
         });
     };
     const onChange = (e) => {

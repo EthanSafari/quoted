@@ -10,7 +10,8 @@ import { PageContext } from "../../context/PageContext";
 import EditProfile from "../OptionsMenuOptions/EditProfile";
 
 
-export default function LoggedinHomepage() {
+export default function LoggedinHomepage({ messageData }) {
+  console.log('loggedInHome', messageData)
   const router = useRouter();
   const [user, loading, error] = useAuthState(auth);
   const [updateProfile, updating, updateError] = useUpdateProfile(auth);
@@ -34,7 +35,7 @@ export default function LoggedinHomepage() {
     <>
       <div>
         <Navbar />
-        {pageNumber === 1 && <MessagePage />}
+        {pageNumber === 1 && <MessagePage messageData={messageData} />}
         {pageNumber === 2 && <OptionsMenu />}
         {pageNumber === 3 && <EditProfile />}
       </div>

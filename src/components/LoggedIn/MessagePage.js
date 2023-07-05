@@ -1,10 +1,10 @@
 import Messages from "../Homepage/Messages";
 import Footer from "../Homepage/Footer";
 
-export default function MessagePage() {
+export default function MessagePage({ messageData }) {
     return (
         <>
-            <Messages />
+            <Messages messageData={messageData}/>
             <Footer />
         </>
     )
