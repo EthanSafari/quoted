@@ -1,12 +1,15 @@
-import { firestoreDb } from '@/src/firebase/clientApp';
+import { auth, firestoreDb } from '@/src/firebase/clientApp';
 import SendOutlinedIcon from '@mui/icons-material/Send';
 import { BottomNavigation, IconButton, TextField, Typography } from "@mui/material";
 import { addDoc, collection, doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 export default function Footer() {
+    const [user, loading, error] = useAuthState(auth);
     const [userMessage, setUserMessage] = useState({
         message: '',
+        author: user.uid,
         createdAt: serverTimestamp(),
     });
     console.log(userMessage)
@@ -23,7 +26,8 @@ export default function Footer() {
         };
         setUserMessage({
             message: '',
-            createdAt: '',
+            author: user.uid,
+            createdAt: serverTimestamp(),
         });
     };
     const onChange = (e) => {
