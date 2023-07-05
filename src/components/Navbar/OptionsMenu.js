@@ -5,8 +5,11 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import OptionUserInfo from "./OptionUserInfo";
 import { PageContext } from "../../context/PageContext";
 import { useContext } from "react";
+import { useDispatch } from "react-redux";
+import { clearMessages } from "@/src/store/message";
 
 export default function OptionsMenu() {
+    const dispatch = useDispatch();
     const { pageNumber, setPageNumber } = useContext(PageContext);
     const optionMenuDesign = {
         height: '100vh',
@@ -53,6 +56,7 @@ export default function OptionsMenu() {
                     onClick={() => {
                         signOut(auth);
                         setPageNumber(pageNumber === 1 ? 2 : 1);
+                        dispatch(clearMessages());
                     }}
                 >
                     LOG OUT

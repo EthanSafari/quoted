@@ -1,14 +1,22 @@
 import LoggedinHomepage from "../components/LoggedIn/LoggedInHomepage";
 import { auth, firestoreDb } from "../firebase/clientApp";
-import { useAuthState } from 'react-firebase-hooks/auth';import LandingPage from "../components/LoggedOut/LandingPage";
+import { useAuthState } from 'react-firebase-hooks/auth'; import LandingPage from "../components/LoggedOut/LandingPage";
 import { useRouter } from "next/router";
 import { collection, getDocs } from "firebase/firestore";
 import safeJsonStringify from "safe-json-stringify";
+import { useDispatch } from "react-redux";
+import { addAllMessages } from "../store/message";
+import { useEffect } from "react";
 ;
 
 export default function Home({ messageData }) {
+  const dispatch = useDispatch();
   const [user, loading, error] = useAuthState(auth);
-  // console.log(messageData)
+
+  useEffect(() => {
+    dispatch(addAllMessages(messageData))
+  }, [dispatch]);
+
   return (
     <>
       {user ? <LoggedinHomepage messageData={messageData} /> : <LandingPage />}
@@ -18,18 +26,22 @@ export default function Home({ messageData }) {
 
 export async function getServerSideProps() {
   try {
-      const data = [];
-      const snapshot = await getDocs(collection(firestoreDb, "messages"));
-      snapshot.forEach((doc) => {
-          data.push(JSON.parse(safeJsonStringify(doc.data())));
-      });
-      // console.log('data', data)
-      return {
-          props: {
-              messageData: data,
-          }
+    const data = [];
+    const snapshot = await getDocs(collection(firestoreDb, "messages"));
+    snapshot.forEach((doc) => {
+      data.push(JSON.parse(safeJsonStringify(doc.data())));
+    });
+    return {
+      props: {
+        messageData: data,
       }
+    }
   } catch (error) {
-      console.log(error)
+    console.log(error)
+    return {
+      props: {
+        messageData: [],
+      }
+    }
   }
 }
