@@ -1,30 +1,55 @@
 import { auth, firestoreDb } from '@/src/firebase/clientApp';
 import SendOutlinedIcon from '@mui/icons-material/Send';
 import { BottomNavigation, IconButton, TextField, Typography } from "@mui/material";
-import { addDoc, collection, doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { Transaction, addDoc, collection, doc, getFirestore, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
+
+function generateFirestoreId(){
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let autoId = '';
+    for (let i = 0; i < 20; i++) {
+        autoId += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    //assert(autoId.length === 20, 'Invalid auto ID: ' + autoId);
+    return autoId;
+}
 
 export default function Footer() {
     const [user, loading, error] = useAuthState(auth);
     const [userMessage, setUserMessage] = useState({
+        id: generateFirestoreId(),
         message: '',
         author: user.uid,
         createdAt: serverTimestamp(),
     });
-    console.log(userMessage)
+    // console.log(userMessage)
     const [err, setErr] = useState('');
     const sendNewMessage = async (e) => {
         e.preventDefault();
         setErr('');
         try {
-            // const messageDocRef = doc(firestoreDb, 'messages');
-            await addDoc(collection(firestoreDb, 'messages'), userMessage);
+            const messageDocRef = doc(firestoreDb, "messages", userMessage.id);
+            const userDocRef = doc(firestoreDb, "users", user.uid);
+            const userMessageInfo = {
+                author: user.uid,
+                username: user.displayName,
+                userProfileImageUrl: user.photoURL,
+            };
+            await runTransaction(firestoreDb, async (transaction) => {
+                // const messageDoc = await transaction.get(messageDocRef);
+                transaction.set(messageDocRef, userMessage);
+                transaction.set(doc(firestoreDb, `users/${user.uid}/messageSnippets`, userMessage.id), userMessage);
+                transaction.set(userDocRef, userMessageInfo);
+                transaction.set(doc(firestoreDb, `messages/${userMessage.id}/userSnippets`, user.uid), userMessageInfo);
+            })
         } catch (error) {
+            console.log(error)
             setErr(error.message)
             return;
         };
         setUserMessage({
+            id: generateFirestoreId(),
             message: '',
             author: user.uid,
             createdAt: serverTimestamp(),
