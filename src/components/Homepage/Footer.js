@@ -1,9 +1,37 @@
+import { firestoreDb } from '@/src/firebase/clientApp';
 import SendOutlinedIcon from '@mui/icons-material/Send';
-import { BottomNavigation, IconButton, TextField } from "@mui/material";
+import { BottomNavigation, IconButton, TextField, Typography } from "@mui/material";
+import { addDoc, collection, doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { useState } from 'react';
 
 export default function Footer() {
-    const [userMessage, setUserMessage] = useState('');
+    const [userMessage, setUserMessage] = useState({
+        message: '',
+        createdAt: serverTimestamp(),
+    });
+    console.log(userMessage)
+    const [err, setErr] = useState('');
+    const sendNewMessage = async (e) => {
+        e.preventDefault();
+        setErr('');
+        try {
+            // const messageDocRef = doc(firestoreDb, 'messages');
+            await addDoc(collection(firestoreDb, 'messages'), userMessage);
+        } catch (error) {
+            setErr(error.message)
+            return;
+        };
+        setUserMessage({
+            message: '',
+            createdAt: '',
+        });
+    };
+    const onChange = (e) => {
+        setUserMessage((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
+    };
     const footerDesign = {
         position: 'fixed',
         bottom: 0,
@@ -20,21 +48,29 @@ export default function Footer() {
     const sendButtonDesign = {
         // marginLeft: '2px'
     };
-    console.log(userMessage)
     return (
         <BottomNavigation
             sx={footerDesign}
         >
-            <form>
+            {err.length > 0 && (
+                <Typography>
+                    {err}
+                </Typography>
+            )}
+            <form
+            onSubmit={sendNewMessage}
+            >
                 <TextField
                     label="Care to Share?"
                     multiline
                     sx={textboxDesign}
-                    value={userMessage}
-                    onChange={e => setUserMessage(e.target.value)}
+                    value={userMessage.message}
+                    name='message'
+                    onChange={onChange}
                 />
                 <IconButton
                     color='secondary'
+                    type='submit'
                 >
                     <SendOutlinedIcon
                         fontSize='large'
