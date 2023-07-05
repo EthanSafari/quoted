@@ -1,5 +1,5 @@
 import { Avatar, Box, Chip, Divider } from "@mui/material";
-import { auth } from "../firebase/clientApp";
+import { auth } from "../../firebase/clientApp";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function OptionUserInfo() {
@@ -17,7 +17,6 @@ export default function OptionUserInfo() {
     const nameDesign = {
         fontSize: '20px'
     };
-    console.log(user)
     return (
         <Box
             sx={boxDesign}

@@ -1,5 +1,5 @@
-import LandingPageText from "@/src/components/LandingPageText";
-import QuotedLarge from "@/src/components/QuotedLarge";
+import LandingPageText from "@/src/components/LoggedOut/LandingPageText";
+import QuotedLarge from "@/src/components/LoggedOut/QuotedLarge";
 import { auth } from "@/src/firebase/clientApp";
 import { Box, Button, FormControl, TextField, Typography } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';

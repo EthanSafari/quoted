@@ -1,5 +1,5 @@
 import { Box, Button, Divider } from "@mui/material";
-import { auth } from "../firebase/clientApp";
+import { auth } from "../../firebase/clientApp";
 import { useSignInWithApple, useSignInWithGoogle } from "react-firebase-hooks/auth";
 import GoogleIcon from '@mui/icons-material/Google';
 import AppleIcon from '@mui/icons-material/Apple';

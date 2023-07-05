@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import MessagePage from "./MessagePage";
-import Navbar from "./Navbar";
-import OptionsMenu from "./OptionsMenu";
+import Navbar from "../Navbar/Navbar";
+import OptionsMenu from "../Navbar/OptionsMenu";
 import { useAuthState, useUpdateProfile } from "react-firebase-hooks/auth";
-import { auth, firestoreDb } from "../firebase/clientApp";
+import { auth, firestoreDb } from "../../firebase/clientApp";
 import { useRouter } from "next/router";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { PageContext } from "../context/PageContext";
-import EditProfile from "./EditProfile";
+import { PageContext } from "../../context/PageContext";
+import EditProfile from "../OptionsMenuOptions/EditProfile";
 
 
 export default function LoggedinHomepage() {

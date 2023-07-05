@@ -1,24 +1,29 @@
-import { addDoc, doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
-import { useState } from "react";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { auth, firestoreDb } from "../../firebase/clientApp";
 import { useAuthState, useUpdateProfile } from "react-firebase-hooks/auth";
 import { Avatar, Box, Button, Container, TextField, Typography } from "@mui/material";
-import LandingPageText from "@/src/components/LandingPageText";
+import LandingPageText from "@/src/components/LoggedOut/LandingPageText";
 import { LoadingButton } from "@mui/lab";
 import { useRouter } from "next/router";
-import QuotedLarge from "@/src/components/QuotedLarge";
+import QuotedLarge from "@/src/components/LoggedOut/QuotedLarge";
+import { redirect } from "next/dist/server/api-utils";
 
 export default function FirestoreUser() {
     const router = useRouter();
     const [user, loading, error] = useAuthState(auth);
     const [updateProfile, updating, updateError] = useUpdateProfile(auth);
     const [err, setErr] = useState("");
+    useEffect(() => {
+        if (!user)
+            router.push('/auth/signup');
+    },[]);
     const [newUser, setNewUser] = useState({
-        id: user.uid,
+        id: user?.uid,
         username: "",
-        email: user.email,
-        profilePhotoUrl: user.photoURL || "",
-        createdAt: user.metadata.creationTime,
+        email: user?.email,
+        profilePhotoUrl: user?.photoURL || "",
+        createdAt: user?.metadata.creationTime,
     });
     const onChange = (e) => {
         setNewUser((prev) => ({

@@ -1,5 +1,5 @@
-import Messages from "./Messages";
-import Footer from "./Footer";
+import Messages from "../Homepage/Messages";
+import Footer from "../Homepage/Footer";
 
 export default function MessagePage() {
     return (

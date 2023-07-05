@@ -1,9 +1,9 @@
-import { Box, Button, List, ListItem } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { signOut } from "firebase/auth";
-import { auth } from "../firebase/clientApp";
+import { auth } from "../../firebase/clientApp";
 import LogoutIcon from '@mui/icons-material/Logout';
 import OptionUserInfo from "./OptionUserInfo";
-import { PageContext } from "../context/PageContext";
+import { PageContext } from "../../context/PageContext";
 import { useContext } from "react";
 
 export default function OptionsMenu() {
@@ -43,7 +43,7 @@ export default function OptionsMenu() {
                         size="large"
                         sx={optionButtonDesign}
                     >
-                        EDIT INFORMATION
+                        EDIT USER PROFILE
                     </Button>
                 </Box>
                 <Button

@@ -3,7 +3,7 @@ import { Advent_Pro } from '@next/font/google';
 import MenuIcon from '@mui/icons-material/Menu';
 import { ChatBubbleOutlineOutlined } from "@mui/icons-material";
 import { useContext } from "react";
-import { PageContext } from "../context/PageContext";
+import { PageContext } from "../../context/PageContext";
 
 const quotedTitle = Advent_Pro({
     subsets: ['latin'],

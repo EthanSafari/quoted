@@ -1,8 +1,8 @@
 import { Avatar, Box, TextField, Button, Typography, Divider } from "@mui/material";
-import { useAuthState, useSendPasswordResetEmail, useUpdateEmail, useUpdatePassword, useUpdateProfile } from "react-firebase-hooks/auth";
-import { auth, firestoreDb } from "../firebase/clientApp";
+import { useAuthState, useSendPasswordResetEmail, useUpdateEmail, useUpdateProfile } from "react-firebase-hooks/auth";
+import { auth, firestoreDb } from "../../firebase/clientApp";
 import { useContext, useState } from "react";
-import { PageContext } from "../context/PageContext";
+import { PageContext } from "../../context/PageContext";
 import { doc, setDoc } from "firebase/firestore";
 
 export default function EditProfile() {
@@ -10,7 +10,6 @@ export default function EditProfile() {
     const [user, loading, error] = useAuthState(auth);
     const [updateProfile, updating, updateError] = useUpdateProfile(auth);
     const [updateEmail, emailUpdating, emailError] = useUpdateEmail(auth);
-    const [updatePassword, passwordUpdating, passwordError] = useUpdatePassword(auth);
     const [sendPasswordResetEmail, sending, emailPassError] = useSendPasswordResetEmail(auth);
     const [err, setErr] = useState('');
     const [updateUser, setUpdateUser] = useState({
