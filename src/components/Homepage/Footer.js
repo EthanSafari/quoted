@@ -1,9 +1,11 @@
 import { auth, firestoreDb } from '@/src/firebase/clientApp';
+import { addMessage } from '@/src/store/message';
 import SendOutlinedIcon from '@mui/icons-material/Send';
 import { BottomNavigation, IconButton, TextField, Typography } from "@mui/material";
 import { Transaction, addDoc, collection, doc, getFirestore, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useDispatch } from 'react-redux';
 
 function generateFirestoreId(){
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -16,6 +18,7 @@ function generateFirestoreId(){
 }
 
 export default function Footer() {
+    const dispatch = useDispatch();
     const [user, loading, error] = useAuthState(auth);
     const [userMessage, setUserMessage] = useState({
         id: generateFirestoreId(),
@@ -24,7 +27,6 @@ export default function Footer() {
         createdAt: new Date().toDateString(),
         createdAtGoogle: serverTimestamp(),
     });
-    // console.log(userMessage)
     const [err, setErr] = useState('');
     const sendNewMessage = async (e) => {
         e.preventDefault();
@@ -43,6 +45,7 @@ export default function Footer() {
                 transaction.set(doc(firestoreDb, `users/${user.uid}/messageSnippets`, userMessage.id), userMessage);
                 transaction.set(userDocRef, userMessageInfo);
                 transaction.set(doc(firestoreDb, `messages/${userMessage.id}/userSnippets`, user.uid), userMessageInfo);
+                dispatch(addMessage(userMessage));
             })
         } catch (error) {
             console.log(error)
@@ -71,6 +74,8 @@ export default function Footer() {
         padding: '10px',
         height: 'fit-content',
         display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
         alignItems: 'center'
     };
     const textboxDesign = {

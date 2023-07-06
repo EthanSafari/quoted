@@ -11,7 +11,6 @@ import EditProfile from "../OptionsMenuOptions/EditProfile";
 
 
 export default function LoggedinHomepage({ messageData }) {
-  console.log('loggedInHome', messageData)
   const router = useRouter();
   const [user, loading, error] = useAuthState(auth);
   const [updateProfile, updating, updateError] = useUpdateProfile(auth);
