@@ -36,7 +36,7 @@ export default function UserMessages() {
         try {
             const selectedQuoteRef = doc(firestoreDb, 'messages', selectedQuote.id);
             await deleteDoc(selectedQuoteRef);
-            dispatch(deleteMessage(selectedQuote.id));
+            // dispatch(deleteMessage(selectedQuote.id));
             setDeleteQuote(false);
             setEditOptions(false);
             setSelectedQuote({
@@ -58,7 +58,7 @@ export default function UserMessages() {
         try {
             const selectedQuoteRef = doc(firestoreDb, 'messages', selectedQuote.id);
             await updateDoc(selectedQuoteRef, selectedQuote);
-            dispatch(updateMessage(selectedQuote));
+            // dispatch(updateMessage(selectedQuote));
             setEditOptions(false);
         } catch (error) {
             console.log(error);

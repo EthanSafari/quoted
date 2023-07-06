@@ -34,7 +34,7 @@ export default function Footer() {
         try {
             const messageDocRef = doc(firestoreDb, "messages", userMessage.id);
             await setDoc(messageDocRef, userMessage);
-            dispatch(addMessage(userMessage));
+            // dispatch(addMessage(userMessage));
         } catch (error) {
             console.log(error)
             setErr(error.message)

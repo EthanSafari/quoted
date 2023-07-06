@@ -2,10 +2,10 @@ import LoggedinHomepage from "../components/LoggedIn/LoggedInHomepage";
 import { auth, firestoreDb } from "../firebase/clientApp";
 import { useAuthState } from 'react-firebase-hooks/auth';
 import LandingPage from "../components/LoggedOut/LandingPage";
-import { collection, getDocs } from "firebase/firestore";
+import { QuerySnapshot, collection, getDocs, onSnapshot, query } from "firebase/firestore";
 import safeJsonStringify from "safe-json-stringify";
 import { useDispatch } from "react-redux";
-import { addAllMessages } from "../store/message";
+import { addAllMessages, addMessage, deleteMessage, updateMessage } from "../store/message";
 import { useEffect } from "react";
 import { addAllUsers } from "../store/users";
 
@@ -18,16 +18,40 @@ export default function Home() {
       try {
         const messageData = [];
         const userData = [];
-        const messageSnapshot = await getDocs(collection(firestoreDb, "messages"));
-        messageSnapshot.forEach((doc) => {
-          messageData.push(JSON.parse(safeJsonStringify(doc.data())));
+        const messageSnapshot = await query(collection(firestoreDb, "messages"));
+        onSnapshot(messageSnapshot, (snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === "added") {
+              dispatch(addMessage(JSON.parse(safeJsonStringify(change.doc.data()))))
+              messageData.push(JSON.parse(safeJsonStringify(change.doc.data())));
+            }
+            if (change.type === "modified") {
+              dispatch(updateMessage(JSON.parse(safeJsonStringify(change.doc.data()))))
+            }
+            if (change.type === "removed") {
+              dispatch(deleteMessage(JSON.parse(safeJsonStringify(change.doc.data().id))))
+            }
+          });
         });
         const userSnapshot = await getDocs(collection(firestoreDb, "users"));
         userSnapshot.forEach((doc) => {
           userData.push(JSON.parse(safeJsonStringify(doc.data())));
         });
-        dispatch(addAllMessages(messageData));
-        dispatch(addAllUsers(userData));
+        // dispatch(addAllUsers(userData));
+        // onSnapshot(userSnapshot, (snapshot) => {
+        //             snapshot.docChanges().forEach((change) => {
+        //     if (change.type === "added") {
+        //       dispatch(addMessage(JSON.parse(safeJsonStringify(change.doc.data()))))
+        //       messageData.push(JSON.parse(safeJsonStringify(change.doc.data())));
+        //     }
+        //     if (change.type === "modified") {
+        //       dispatch(updateMessage(JSON.parse(safeJsonStringify(change.doc.data()))))
+        //     }
+        //     if (change.type === "removed") {
+        //       // dispatch(deleteMessage(JSON.parse(safeJsonStringify(change.doc.data().id))))
+        //     }
+        //   });
+        // })
       } catch (error) {
         console.log(error)
         dispatch(addAllMessages([]));
