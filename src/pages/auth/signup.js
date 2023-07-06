@@ -8,8 +8,10 @@ import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { FIREBASE_ERRORS } from "@/src/firebase/errors";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
 
 export default function SignUpPage() {
+    const dispatch = useDispatch();
     const router = useRouter();
     const [signupForm, setSignupForm] = useState({
         email: "",
@@ -27,6 +29,7 @@ export default function SignUpPage() {
     useEffect(() => {
         if (user)
             router.push('/user/newuser');
+            
     }, [user]);
 
     const signupPageDesign = {

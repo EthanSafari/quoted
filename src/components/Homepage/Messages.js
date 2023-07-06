@@ -1,42 +1,28 @@
-import { firestoreDb } from "@/src/firebase/clientApp";
+import { auth, firestoreDb } from "@/src/firebase/clientApp";
 import { Box, List, ListItem, ListItemAvatar, Avatar, ListItemText } from "@mui/material";
-import { collection, doc, getDocs } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { useSelector } from "react-redux";
-import safeJsonStringify from "safe-json-stringify";
 
 export default function Messages() {
+    const [user] = useAuthState(auth);
     const allMessages = useSelector(state => state.messages.messages);
-    const messageList =  Object.values(allMessages);
+    const allUsers = useSelector(state => state.users.users);
+    const messageList =  Object.values(allMessages).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return (
-        <Box mt={6} mb={8}>
+        <Box mt={8} mb={8}>
             <List>
-                {messageList.map(({ message, createdAt }, i) => (
+                {messageList.map(({ message, createdAt, author }, i) => (
                     <ListItem button key={i}>
                         <ListItemAvatar>
-                            <Avatar alt="Profile Picture" />
+                            <Avatar alt="Profile Picture" src={author === user.uid ? user.photoURL : allUsers[author].profilePhotoUrl}/>
                         </ListItemAvatar>
-                        <ListItemText primary={createdAt.seconds || createdAt} secondary={message} />
+                        <ListItemText
+                        primary={author === user.uid ? user.displayName : allUsers[author].username}
+                        secondary={`${new Date(createdAt).toDateString()} : ${message}`}
+                        />
                     </ListItem>
                 ))}
             </List>
         </Box>
     )
-}
-
-export async function getServerSideProps() {
-    try {
-        const data = [];
-        const snapshot = await getDocs(collection(firestoreDb, "messages"));
-        snapshot.forEach((doc) => {
-            data.push(JSON.parse(safeJsonStringify(doc.data())));
-        });
-        return {
-            props: {
-                messageData: data,
-            }
-        }
-    } catch (error) {
-        console.log(error)
-    }
-}
+};

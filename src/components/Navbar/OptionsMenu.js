@@ -7,6 +7,7 @@ import { PageContext } from "../../context/PageContext";
 import { useContext } from "react";
 import { useDispatch } from "react-redux";
 import { clearMessages } from "@/src/store/message";
+import { clearUsers } from "@/src/store/users";
 
 export default function OptionsMenu() {
     const dispatch = useDispatch();
@@ -72,6 +73,7 @@ export default function OptionsMenu() {
                         signOut(auth);
                         setPageNumber(pageNumber === 1 ? 2 : 1);
                         dispatch(clearMessages());
+                        dispatch(clearUsers());
                     }}
                 >
                     LOG OUT

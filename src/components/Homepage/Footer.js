@@ -2,12 +2,12 @@ import { auth, firestoreDb } from '@/src/firebase/clientApp';
 import { addMessage } from '@/src/store/message';
 import SendOutlinedIcon from '@mui/icons-material/Send';
 import { BottomNavigation, IconButton, TextField, Typography } from "@mui/material";
-import { doc, runTransaction, serverTimestamp } from 'firebase/firestore';
+import { doc, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDispatch } from 'react-redux';
 
-function generateFirestoreId(){
+function generateFirestoreId() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let autoId = '';
     for (let i = 0; i < 20; i++) {
@@ -33,20 +33,8 @@ export default function Footer() {
         setErr('');
         try {
             const messageDocRef = doc(firestoreDb, "messages", userMessage.id);
-            const userDocRef = doc(firestoreDb, "users", user.uid);
-            const userMessageInfo = {
-                author: user.uid,
-                username: user.displayName,
-                userProfileImageUrl: user.photoURL,
-            };
-            await runTransaction(firestoreDb, async (transaction) => {
-                // const messageDoc = await transaction.get(messageDocRef);
-                transaction.set(messageDocRef, userMessage);
-                transaction.set(doc(firestoreDb, `users/${user.uid}/messageSnippets`, userMessage.id), userMessage);
-                transaction.set(userDocRef, userMessageInfo);
-                transaction.set(doc(firestoreDb, `messages/${userMessage.id}/userSnippets`, user.uid), userMessageInfo);
-                dispatch(addMessage(userMessage));
-            })
+            await setDoc(messageDocRef, userMessage);
+            dispatch(addMessage(userMessage));
         } catch (error) {
             console.log(error)
             setErr(error.message)
@@ -94,7 +82,7 @@ export default function Footer() {
                 </Typography>
             )}
             <form
-            onSubmit={sendNewMessage}
+                onSubmit={sendNewMessage}
             >
                 <TextField
                     label="Care to Share?"

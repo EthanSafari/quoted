@@ -97,7 +97,7 @@ export default function UserMessages() {
                 YOUR QUOTES
             </Typography>
             <Divider>
-                <Chip label='SELECT ON AN QUOTE FOR OPTIONS' />
+                <Chip label={userMessages.length ? 'SELECT ON AN QUOTE FOR OPTIONS' : 'LOOKS LIKE YOU HAVE NO QUOTES!'} />
             </Divider>
             <List>
                 {userMessages.map((message, i) => (

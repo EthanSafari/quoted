@@ -7,14 +7,16 @@ import safeJsonStringify from "safe-json-stringify";
 import { useDispatch } from "react-redux";
 import { addAllMessages } from "../store/message";
 import { useEffect } from "react";
+import { addAllUsers } from "../store/users";
 ;
 
-export default function Home({ messageData }) {
+export default function Home({ messageData, userData }) {
   const dispatch = useDispatch();
   const [user, loading, error] = useAuthState(auth);
 
   useEffect(() => {
     dispatch(addAllMessages(messageData))
+    dispatch(addAllUsers(userData));
   }, [dispatch]);
 
   return (
@@ -26,14 +28,20 @@ export default function Home({ messageData }) {
 
 export async function getServerSideProps() {
   try {
-    const data = [];
-    const snapshot = await getDocs(collection(firestoreDb, "messages"));
-    snapshot.forEach((doc) => {
-      data.push(JSON.parse(safeJsonStringify(doc.data())));
+    const messageData = [];
+    const userData = [];
+    const messageSnapshot = await getDocs(collection(firestoreDb, "messages"));
+    messageSnapshot.forEach((doc) => {
+      messageData.push(JSON.parse(safeJsonStringify(doc.data())));
+    });
+    const userSnapshot = await getDocs(collection(firestoreDb, "users"));
+    userSnapshot.forEach((doc) => {
+      userData.push(JSON.parse(safeJsonStringify(doc.data())));
     });
     return {
       props: {
-        messageData: data,
+        messageData: messageData,
+        userData: userData,
       }
     }
   } catch (error) {
@@ -41,6 +49,7 @@ export async function getServerSideProps() {
     return {
       props: {
         messageData: [],
+        userData: [],
       }
     }
   }
