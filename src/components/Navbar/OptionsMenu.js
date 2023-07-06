@@ -42,6 +42,16 @@ export default function OptionsMenu() {
                         variant="outlined"
                         color="secondary"
                         fullWidth
+                        onClick={() => setPageNumber(4)}
+                        size="large"
+                        sx={optionButtonDesign}
+                    >
+                        Your Quotes
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        color="secondary"
+                        fullWidth
                         onClick={() => setPageNumber(3)}
                         size="large"
                         sx={optionButtonDesign}

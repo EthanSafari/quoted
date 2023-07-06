@@ -24,7 +24,7 @@ export default function Footer() {
         id: generateFirestoreId(),
         message: '',
         author: user.uid,
-        createdAt: new Date().toDateString(),
+        createdAt: new Date().toString(),
         createdAtGoogle: serverTimestamp(),
     });
     const [err, setErr] = useState('');

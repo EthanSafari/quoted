@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { PageContext } from "../../context/PageContext";
 import EditProfile from "../OptionsMenuOptions/EditProfile";
+import UserMessages from "../OptionsMenuOptions/UserMessages";
 
 
 export default function LoggedinHomepage({ messageData }) {
@@ -37,6 +38,7 @@ export default function LoggedinHomepage({ messageData }) {
         {pageNumber === 1 && <MessagePage messageData={messageData} />}
         {pageNumber === 2 && <OptionsMenu />}
         {pageNumber === 3 && <EditProfile />}
+        {pageNumber === 4 && <UserMessages />}
       </div>
     </>
   )

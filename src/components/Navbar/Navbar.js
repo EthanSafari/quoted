@@ -4,14 +4,22 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { ChatBubbleOutlineOutlined } from "@mui/icons-material";
 import { useContext } from "react";
 import { PageContext } from "../../context/PageContext";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const quotedTitle = Advent_Pro({
     subsets: ['latin'],
     weight: ['600'],
 });
 
+
 export default function Navbar() {
     const { pageNumber, setPageNumber } = useContext(PageContext);
+    const setPage = (page) => {
+        if (page === 1) setPageNumber(2);
+        else if (page === 3) setPageNumber(2);
+        else if (page === 4) setPageNumber(2);
+        else setPageNumber(1);
+    };
     const toolbarDesign = {
         display: 'flex',
         justifyContent: 'space-between'
@@ -26,10 +34,17 @@ export default function Navbar() {
         <AppBar>
             <Toolbar sx={toolbarDesign}>
                 <IconButton size="medium" color="secondary">
-                    <MenuIcon
-                    fontSize="large"
-                    onClick={() => setPageNumber(pageNumber === 1 ? 2 : pageNumber === 3 ? 2 : 1)}
-                    />
+                    {pageNumber === 1 ? (
+                        <MenuIcon
+                            fontSize="large"
+                            onClick={() => setPage(pageNumber)}
+                        />
+                    ) : (
+                        <ArrowBackIcon
+                            fontSize="large"
+                            onClick={() => setPage(pageNumber)}
+                        />
+                    )}
                 </IconButton>
                 <Box sx={logoDesign}>
                     <Typography variant="h4" className={quotedTitle.className}>
