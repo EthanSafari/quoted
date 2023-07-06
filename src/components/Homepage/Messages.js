@@ -14,10 +14,10 @@ export default function Messages() {
                 {messageList.map(({ message, createdAt, author }, i) => (
                     <ListItem button key={i}>
                         <ListItemAvatar>
-                            <Avatar alt="Profile Picture" src={author === user.uid ? user.photoURL : allUsers[author].profilePhotoUrl} />
+                            <Avatar alt="Profile Picture" src={author === user.uid ? user.photoURL : allUsers[author]?.profilePhotoUrl} />
                         </ListItemAvatar>
                         <ListItemText
-                            primary={author === user.uid ? user.displayName : allUsers[author].username}
+                            primary={author === user.uid ? user.displayName : allUsers[author]?.username}
                             secondary={`${new Date(createdAt).toDateString()} : ${message}`}
                         />
                     </ListItem>

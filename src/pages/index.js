@@ -2,7 +2,7 @@ import LoggedinHomepage from "../components/LoggedIn/LoggedInHomepage";
 import { auth, firestoreDb } from "../firebase/clientApp";
 import { useAuthState } from 'react-firebase-hooks/auth';
 import LandingPage from "../components/LoggedOut/LandingPage";
-import { collection, getDocs } from "firebase/firestore";
+import { QuerySnapshot, collection, getDocs, onSnapshot, query } from "firebase/firestore";
 import safeJsonStringify from "safe-json-stringify";
 import { useDispatch } from "react-redux";
 import { addAllMessages } from "../store/message";
@@ -18,16 +18,20 @@ export default function Home() {
       try {
         const messageData = [];
         const userData = [];
-        const messageSnapshot = await getDocs(collection(firestoreDb, "messages"));
-        messageSnapshot.forEach((doc) => {
-          messageData.push(JSON.parse(safeJsonStringify(doc.data())));
+        const messageDataQuery = await query(collection(firestoreDb, "messages"));
+        onSnapshot(messageDataQuery, (querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            messageData.push(JSON.parse(safeJsonStringify(doc.data())));
+          });
+          dispatch(addAllMessages(messageData));
         });
-        const userSnapshot = await getDocs(collection(firestoreDb, "users"));
-        userSnapshot.forEach((doc) => {
-          userData.push(JSON.parse(safeJsonStringify(doc.data())));
+        const userDataQuery = await query(collection(firestoreDb, "users"));
+        onSnapshot(userDataQuery, (querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            userData.push(JSON.parse(safeJsonStringify(doc.data())));
+          });
+          dispatch(addAllUsers(userData));
         });
-        dispatch(addAllMessages(messageData));
-        dispatch(addAllUsers(userData));
       } catch (error) {
         console.log(error)
         dispatch(addAllMessages([]));
