@@ -24,7 +24,7 @@ export default function Footer() {
         id: generateFirestoreId(),
         message: '',
         author: user.uid,
-        createdAt: new Date().toString(),
+        createdAt: new Date().toJSON(),
         createdAtGoogle: serverTimestamp(),
     });
     const [err, setErr] = useState('');
@@ -44,7 +44,7 @@ export default function Footer() {
             id: generateFirestoreId(),
             message: '',
             author: user.uid,
-            createdAt: new Date().toDateString(),
+            createdAt: new Date().toJSON(),
             createdAtGoogle: serverTimestamp(),
         });
     };
