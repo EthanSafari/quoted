@@ -19,11 +19,11 @@ export default function FirestoreUser() {
             router.push('/auth/signup');
     },[]);
     const [newUser, setNewUser] = useState({
-        id: user.uid,
+        id: user?.uid,
         username: "",
-        email: user.email,
-        profilePhotoUrl: user.photoURL || "",
-        createdAt: user.metadata.creationTime,
+        email: user?.email,
+        profilePhotoUrl: user?.photoURL || "",
+        createdAt: user?.metadata.creationTime,
     });
     const onChange = (e) => {
         setNewUser((prev) => ({
