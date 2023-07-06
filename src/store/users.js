@@ -1,5 +1,6 @@
 const ALL_USERS = 'users/allUsers';
 const ADD_USER = 'users/addUser';
+const UPDATE_USER = 'users/updateUser';
 const CLEAR_USERS = 'users/clearUsers';
 
 const allUsers = (users) => {
@@ -9,10 +10,17 @@ const allUsers = (users) => {
     }
 };
 
-export const addUSer = (user) => {
+export const addUser = (user) => {
     return {
         type: ADD_USER,
         user
+    }
+};
+
+export const updateUser = (user) => {
+    return {
+        type: UPDATE_USER,
+        user,
     }
 };
 
@@ -43,6 +51,11 @@ const userReducer = (state = initialState, action) => {
             return newState;
 
         case ADD_USER:
+            newState = { users: { ...state.users } };
+            newState.users[action.user.id] = action.user;
+            return newState;
+
+        case UPDATE_USER:
             newState = { users: { ...state.users } };
             newState.users[action.user.id] = action.user;
             return newState;

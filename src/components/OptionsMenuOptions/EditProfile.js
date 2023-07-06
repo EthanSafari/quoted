@@ -3,7 +3,7 @@ import { useAuthState, useSendPasswordResetEmail, useUpdateEmail, useUpdateProfi
 import { auth, firestoreDb } from "../../firebase/clientApp";
 import { useContext, useState } from "react";
 import { PageContext } from "../../context/PageContext";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 
 export default function EditProfile() {
     const { setPageNumber } = useContext(PageContext);
@@ -31,8 +31,8 @@ export default function EditProfile() {
             if (updateUser.email !== user.email) await updateEmail(updateUser.email);
             // if (updateUser.password.length > 6) await updatePassword(updateUser.password);
             await updateProfile({ displayName: updateUser.username, photoURL: updateUser.profilePhotoUrl });
-            const userDocRef = doc(firestoreDb, 'users', user.uid);
-            await setDoc(userDocRef, updateUser);
+            const userDocRef = doc(firestoreDb, 'users', updateUser.id);
+            await updateDoc(userDocRef, updateUser);
         } catch (error) {
             setErr(error.message);
             return;
