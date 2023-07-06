@@ -2,7 +2,7 @@ import { auth, firestoreDb } from '@/src/firebase/clientApp';
 import { addMessage } from '@/src/store/message';
 import SendOutlinedIcon from '@mui/icons-material/Send';
 import { BottomNavigation, IconButton, TextField, Typography } from "@mui/material";
-import { Transaction, addDoc, collection, doc, getFirestore, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore';
+import { doc, runTransaction, serverTimestamp } from 'firebase/firestore';
 import { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDispatch } from 'react-redux';

@@ -1,5 +1,7 @@
 const ALL_MESSAGES = 'messages/allMessages';
 const ADD_MESSAGE = 'messages/addMessage';
+const DELETE_MESSAGE = 'messages/deleteMessage';
+const UPDATE_MESSAGE = 'messages/updateMessage';
 const CLEAR_MESSAGES = 'messages/clearMessages';
 
 
@@ -14,6 +16,20 @@ export const addMessage = (message) => {
     return {
         type: ADD_MESSAGE,
         message
+    }
+};
+
+export const updateMessage = (message) => {
+    return {
+        type: UPDATE_MESSAGE,
+        message
+    }
+};
+
+export const deleteMessage = (messageId) => {
+    return {
+        type: DELETE_MESSAGE,
+        messageId
     }
 };
 
@@ -36,6 +52,7 @@ const initialState = { messages: {} };
 const messageReducer = (state = initialState, action) => {
     let newState;
     switch (action.type) {
+
         case ALL_MESSAGES:
             newState = { messages: {} };
             action.messages.forEach(message => {
@@ -44,6 +61,16 @@ const messageReducer = (state = initialState, action) => {
             return newState;
 
         case ADD_MESSAGE:
+            newState = { messages: { ...state.messages } };
+            newState.messages[action.message.id] = action.message;
+            return newState;
+
+        case DELETE_MESSAGE:
+            newState = { messages: { ...state.messages } };
+            delete newState.messages[action.messageId];
+            return newState;
+
+        case UPDATE_MESSAGE:
             newState = { messages: { ...state.messages } };
             newState.messages[action.message.id] = action.message;
             return newState;
