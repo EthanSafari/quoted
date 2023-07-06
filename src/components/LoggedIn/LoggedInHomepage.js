@@ -11,7 +11,7 @@ import EditProfile from "../OptionsMenuOptions/EditProfile";
 import UserMessages from "../OptionsMenuOptions/UserMessages";
 
 
-export default function LoggedinHomepage({ messageData }) {
+export default function LoggedinHomepage() {
   const router = useRouter();
   const [user, loading, error] = useAuthState(auth);
   const [updateProfile, updating, updateError] = useUpdateProfile(auth);
@@ -35,7 +35,7 @@ export default function LoggedinHomepage({ messageData }) {
     <>
       <div>
         <Navbar />
-        {pageNumber === 1 && <MessagePage messageData={messageData} />}
+        {pageNumber === 1 && <MessagePage />}
         {pageNumber === 2 && <OptionsMenu />}
         {pageNumber === 3 && <EditProfile />}
         {pageNumber === 4 && <UserMessages />}

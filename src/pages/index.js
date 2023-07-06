@@ -15,13 +15,13 @@ export default function Home({ messageData, userData }) {
   const [user, loading, error] = useAuthState(auth);
 
   useEffect(() => {
-    dispatch(addAllMessages(messageData))
+    dispatch(addAllMessages(messageData));
     dispatch(addAllUsers(userData));
   }, [dispatch]);
 
   return (
     <>
-      {user ? <LoggedinHomepage messageData={messageData} /> : <LandingPage />}
+      {user ? <LoggedinHomepage /> : <LandingPage />}
     </>
   )
 };
