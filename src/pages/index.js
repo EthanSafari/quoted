@@ -14,9 +14,29 @@ export default function Home({ messageData, userData }) {
   const [user, loading, error] = useAuthState(auth);
 
   useEffect(() => {
-    dispatch(addAllMessages(messageData));
-    dispatch(addAllUsers(userData));
-  }, [dispatch]);
+    const getData = async () => {
+      try {
+        const messageData = [];
+        const userData = [];
+        const messageSnapshot = await getDocs(collection(firestoreDb, "messages"));
+        messageSnapshot.forEach((doc) => {
+          messageData.push(JSON.parse(safeJsonStringify(doc.data())));
+        });
+        const userSnapshot = await getDocs(collection(firestoreDb, "users"));
+        userSnapshot.forEach((doc) => {
+          userData.push(JSON.parse(safeJsonStringify(doc.data())));
+        });
+        dispatch(addAllMessages(messageData));
+        dispatch(addAllUsers(userData));
+      } catch (error) {
+        console.log(error)
+        dispatch(addAllMessages([]));
+        dispatch(addAllUsers([]));
+        return;
+      }
+    }
+    getData()
+  }, []);
 
   return (
     <>
@@ -25,31 +45,31 @@ export default function Home({ messageData, userData }) {
   )
 };
 
-export async function getServerSideProps() {
-  try {
-    const messageData = [];
-    const userData = [];
-    const messageSnapshot = await getDocs(collection(firestoreDb, "messages"));
-    messageSnapshot.forEach((doc) => {
-      messageData.push(JSON.parse(safeJsonStringify(doc.data())));
-    });
-    const userSnapshot = await getDocs(collection(firestoreDb, "users"));
-    userSnapshot.forEach((doc) => {
-      userData.push(JSON.parse(safeJsonStringify(doc.data())));
-    });
-    return {
-      props: {
-        messageData: messageData,
-        userData: userData,
-      }
-    }
-  } catch (error) {
-    console.log(error)
-    return {
-      props: {
-        messageData: [],
-        userData: [],
-      }
-    }
-  }
-}
+// export async function getServerSideProps() {
+//   try {
+//     const messageData = [];
+//     const userData = [];
+//     const messageSnapshot = await getDocs(collection(firestoreDb, "messages"));
+//     messageSnapshot.forEach((doc) => {
+//       messageData.push(JSON.parse(safeJsonStringify(doc.data())));
+//     });
+//     const userSnapshot = await getDocs(collection(firestoreDb, "users"));
+//     userSnapshot.forEach((doc) => {
+//       userData.push(JSON.parse(safeJsonStringify(doc.data())));
+//     });
+//     return {
+//       props: {
+//         messageData: messageData,
+//         userData: userData,
+//       }
+//     }
+//   } catch (error) {
+//     console.log(error)
+//     return {
+//       props: {
+//         messageData: [],
+//         userData: [],
+//       }
+//     }
+//   }
+// }
