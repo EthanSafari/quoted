@@ -17,7 +17,9 @@ export default function Home() {
     const getData = async () => {
       try {
         const messageSnapshot = await query(collection(firestoreDb, "messages"));
-        onSnapshot(messageSnapshot, (snapshot) => {
+        onSnapshot(messageSnapshot,
+          { includeMetadataChanges: true },
+           (snapshot) => {
           snapshot.docChanges().forEach((change) => {
             if (change.type === "added") {
               dispatch(addMessage(JSON.parse(safeJsonStringify(change.doc.data()))))
@@ -32,7 +34,9 @@ export default function Home() {
           });
         });
         const userSnapshot = await query(collection(firestoreDb, "users"));
-        onSnapshot(userSnapshot, (snapshot) => {
+        onSnapshot(userSnapshot,
+          { includeMetadataChanges: true },
+           (snapshot) => {
                     snapshot.docChanges().forEach((change) => {
             if (change.type === "added") {
               dispatch(addUser(JSON.parse(safeJsonStringify(change.doc.data()))))
