@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, ButtonGroup } from "@mui/material";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/clientApp";
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -38,6 +38,10 @@ export default function OptionsMenu() {
                 <Box
                     sx={buttonBoxDesign}
                 >
+                    <ButtonGroup
+                    orientation="vertical"
+                    fullWidth
+                    >
                     <Button
                         variant="outlined"
                         color="secondary"
@@ -58,6 +62,7 @@ export default function OptionsMenu() {
                     >
                         EDIT USER PROFILE
                     </Button>
+                    </ButtonGroup>
                 </Box>
                 <Button
                     variant="text"
