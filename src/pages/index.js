@@ -9,7 +9,7 @@ import { addAllMessages } from "../store/message";
 import { useEffect } from "react";
 import { addAllUsers } from "../store/users";
 
-export default function Home({ messageData, userData }) {
+export default function Home() {
   const dispatch = useDispatch();
   const [user, loading, error] = useAuthState(auth);
 
