@@ -21,7 +21,7 @@ export default function LoggedinHomepage({ messageData }) {
       const newUserName = user?.email.split('@')[0];
       const userDocRef = doc(firestoreDb, 'users', user?.uid);
       setDoc(userDocRef, {
-        id: user?.uid,
+        id: user.uid,
         email: user.email,
         username: newUserName,
         profilePhotoUrl: user?.photoURL || "",
