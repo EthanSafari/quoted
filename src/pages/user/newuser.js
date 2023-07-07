@@ -1,5 +1,5 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { auth, firestoreDb } from "../../firebase/clientApp";
 import { useAuthState, useUpdateProfile } from "react-firebase-hooks/auth";
 import { Avatar, Box, Button, Container, TextField, Typography } from "@mui/material";
@@ -14,6 +14,10 @@ export default function FirestoreUser() {
     const [user, loading, error] = useAuthState(auth);
     const [updateProfile, updating, updateError] = useUpdateProfile(auth);
     const [err, setErr] = useState("");
+    // const imageRef = useRef(null);
+    // const handleUploadImage = () => {
+
+    // }
     useEffect(() => {
         if (!user)
             router.push('/auth/signup');
@@ -109,6 +113,7 @@ export default function FirestoreUser() {
                             onChange={onChange}
                             margin="normal"
                         />
+                        {/* <input type="file" /> */}
                         {/* <TextField
                             label="DESCRIPTION"
                             value={newUser.description}
