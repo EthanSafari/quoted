@@ -1,6 +1,6 @@
 import LandingPageText from "@/src/components/LoggedOut/LandingPageText";
 import QuotedLarge from "@/src/components/LoggedOut/QuotedLarge";
-import { auth } from "@/src/firebase/clientApp";
+import { auth, firestoreDb } from "@/src/firebase/clientApp";
 import { Box, Button, FormControl, TextField, Typography } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useEffect, useState } from "react";
@@ -9,6 +9,7 @@ import { FIREBASE_ERRORS } from "@/src/firebase/errors";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 
 export default function SignUpPage() {
     const dispatch = useDispatch();
@@ -27,10 +28,23 @@ export default function SignUpPage() {
     ] = useCreateUserWithEmailAndPassword(auth);
 
     useEffect(() => {
-        if (user)
+        if (user) {
+            createUserDoc(user);
             router.push('/user/newuser');
-            
+        }
     }, [user]);
+
+    const createUserDoc = async (user) => {
+        const userDocRef = doc(firestoreDb, 'users', user.user.uid);
+        await setDoc(userDocRef, {
+            id: user.user.uid,
+            username: user.user.email.split('@')[0],
+            email: user.user.email,
+            profilePhotoUrl: "",
+            createdAt: user.user.metadata.creationTime,
+        });
+    }
+    console.log('user: ', user?.user)
 
     const signupPageDesign = {
         width: '100vw',

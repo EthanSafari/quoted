@@ -19,17 +19,13 @@ export default function FirestoreUser() {
     const [selectedFile, setSelectedFile] = useState("");
     const selectedFileRef = useRef(null);
 
-    console.log(selectedFile)
     useEffect(() => {
         if (!user)
             router.push('/auth/signup');
     }, []);
     const [newUser, setNewUser] = useState({
-        id: user?.uid,
-        username: "",
-        email: user?.email,
+        username: user ? user.username : '',
         profilePhotoUrl: selectedFile,
-        createdAt: user?.metadata.creationTime,
     });
     const onSelectImage = (e) => {
         const reader = new FileReader();
@@ -52,11 +48,11 @@ export default function FirestoreUser() {
         e.preventDefault();
         setErr('');
         try {
-            const userDocRef = doc(firestoreDb, 'users', newUser.id);
-            const userDoc = getDoc(userDocRef);
-            if ((await userDoc).exists())
-                throw new Error(`${newUser.username} ALREADY EXISTS. PLEASE ENTER A NEW ONE.`);
-            await setDoc(userDocRef, newUser);
+            const userDocRef = doc(firestoreDb, 'users', user.uid);
+            // const userDoc = getDoc(userDocRef);
+            // if ((await userDoc).exists())
+            //     throw new Error(`${newUser.username} ALREADY EXISTS. PLEASE ENTER A NEW ONE.`);
+            await updateDoc(userDocRef, newUser);
             await updateProfile({ displayName: newUser.username, photoURL: newUser.profilePhotoUrl });
             if (selectedFile.length > 0) {
                 const imageRef = ref(storage, `users/${user?.uid}/image`);
@@ -147,15 +143,6 @@ export default function FirestoreUser() {
                             type="text"
                             onChange={onChange}
                         />
-                        {/* <TextField
-                            label="PROFILE PICTURE URL"
-                            value={newUser.profilePhotoUrl}
-                            fullWidth
-                            name="profilePhotoUrl"
-                            type="url"
-                            onChange={onChange}
-                            margin="normal"
-                        /> */}
                         {err.length > 0 && (
                             <Typography>
                                 {err}
