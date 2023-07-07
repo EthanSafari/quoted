@@ -90,7 +90,7 @@ export default function EditProfile() {
                 UPDATE INFORMATION
             </Typography>
                     <Typography
-                        mt={3}
+                        mt={1}
                     >
                         UPLOAD IMAGE
                     </Typography>
