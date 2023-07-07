@@ -5,14 +5,15 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useSelector } from "react-redux";
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { deleteMessage, updateMessage } from "@/src/store/message";
-import { useDispatch } from 'react-redux';
 
 export default function UserMessages() {
-    const dispatch = useDispatch();
     const [user] = useAuthState(auth);
-    const allMessages = useSelector(state => state.messages.messages);
-    const userMessages = Object.values(allMessages).filter(message => message.author === user.uid);
+    const userMessages = useSelector(state => {
+        const stateQuotes = state.messages.messages;
+        const quotesArr = Object.values(stateQuotes).filter(message => message.author === user.uid);
+        const sortedQuotes = quotesArr.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        return sortedQuotes;
+    });
     const [editOptions, setEditOptions] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [updateQuote, setUpdateQuote] = useState(false);
@@ -111,8 +112,12 @@ export default function UserMessages() {
                             setSelectedIndex(selectedIndex !== i ? i : null);
                             setSelectedQuote(message);
                         }}
-                    >
-                        <ListItemText primary={message.createdAt.seconds || message.createdAt} secondary={message.message} />
+                        >
+                        <ListItemText
+                        sx={{ padding: '5px 10px'}}
+                            primary={`"${message.message}"`}
+                            secondary={new Date(message.createdAt).toDateString()}
+                        />
                     </ListItemButton>
                 ))}
             </List>
@@ -128,7 +133,17 @@ export default function UserMessages() {
                             padding: '10px 2vw',
                         }}
                     >
-                        {selectedQuote.message}
+                        {
+                        selectedQuote.message.length > 0 ?
+                        selectedQuote.message : (
+                            <Typography
+                            color={'warning'}
+                            >
+
+                        NEW QUOTE CANNOT BE LEFT BLANK
+                        </Typography>
+                        )
+                        }
                     </Typography>
                     <ButtonGroup
                         size="large"
@@ -172,14 +187,14 @@ export default function UserMessages() {
                                     name='message'
                                     onChange={onChange}
                                 />
-                                <IconButton
+                                <Button
                                     color='secondary'
                                     type='submit'
                                 >
                                     <EditNoteIcon
                                         fontSize='large'
                                     />
-                                </IconButton>
+                                </Button>
                             </form>
                         </Box>
                     }
