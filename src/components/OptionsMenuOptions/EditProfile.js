@@ -36,7 +36,7 @@ export default function EditProfile() {
             const userDocRef = doc(firestoreDb, 'users', user.uid);
             await updateDoc(userDocRef, updateUser);
             if (selectedFile !== user.photoURL && selectedFile.length > 0) {
-                const imageRef = ref(storage, `users/${updateUser.id}/image`);
+                const imageRef = ref(storage, `users/${user.uid}/image`);
                 await uploadString(imageRef, selectedFile, 'data_url');
                 const downloadURL = await getDownloadURL(imageRef);
                 await updateDoc(userDocRef, {
@@ -89,6 +89,11 @@ export default function EditProfile() {
             <Typography variant="h5">
                 UPDATE INFORMATION
             </Typography>
+                    <Typography
+                        mt={3}
+                    >
+                        UPLOAD IMAGE
+                    </Typography>
             <IconButton
                 sx={{
                     borderRadius: '100px', width: 150,
@@ -103,18 +108,19 @@ export default function EditProfile() {
                     button
                 />
             </IconButton>
-
-            <Typography
-                mb={3}
+            {/* <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => setSelectedFile('')}
+                mb={2}
             >
-                UPLOAD IMAGE
-            </Typography>
+                REMOVE PHOTO
+            </Button> */}
             <input
                 type="file"
                 hidden
                 ref={selectedFileRef}
                 onChange={onSelectImage}
-            // onChange={onChange}
             />
             {err.length > 1 && (
                 <Typography>
@@ -134,15 +140,6 @@ export default function EditProfile() {
                     onChange={onChange}
                     margin="normal"
                 />
-                {/* <TextField
-                    label="PROFILE PICTURE URL"
-                    value={updateUser.profilePhotoUrl}
-                    fullWidth
-                    name="profilePhotoUrl"
-                    type="url"
-                    onChange={onChange}
-                    margin="normal"
-                /> */}
                 <TextField
                     required
                     label="EMAIL"
