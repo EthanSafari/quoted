@@ -1,30 +1,47 @@
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { auth, firestoreDb } from "../../firebase/clientApp";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { useEffect, useRef, useState } from "react";
+import { auth, firestoreDb, storage } from "../../firebase/clientApp";
 import { useAuthState, useUpdateProfile } from "react-firebase-hooks/auth";
-import { Avatar, Box, Button, Container, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Button, Container, IconButton, TextField, Typography } from "@mui/material";
 import LandingPageText from "@/src/components/LoggedOut/LandingPageText";
 import { LoadingButton } from "@mui/lab";
 import { useRouter } from "next/router";
 import QuotedLarge from "@/src/components/LoggedOut/QuotedLarge";
 import { redirect } from "next/dist/server/api-utils";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
 export default function FirestoreUser() {
     const router = useRouter();
     const [user, loading, error] = useAuthState(auth);
     const [updateProfile, updating, updateError] = useUpdateProfile(auth);
     const [err, setErr] = useState("");
+
+    const [selectedFile, setSelectedFile] = useState("");
+    const selectedFileRef = useRef(null);
+
+    console.log(selectedFile)
     useEffect(() => {
         if (!user)
             router.push('/auth/signup');
-    },[]);
+    }, []);
     const [newUser, setNewUser] = useState({
         id: user?.uid,
         username: "",
         email: user?.email,
-        profilePhotoUrl: user?.photoURL || "",
+        profilePhotoUrl: selectedFile,
         createdAt: user?.metadata.creationTime,
     });
+    const onSelectImage = (e) => {
+        const reader = new FileReader();
+        if (e.target.files?.[0]) {
+            reader.readAsDataURL(e.target.files[0]);
+        }
+        reader.onload = (readerEvent) => {
+            if (readerEvent.target?.result) {
+                setSelectedFile(readerEvent.target.result)
+            }
+        }
+    };
     const onChange = (e) => {
         setNewUser((prev) => ({
             ...prev,
@@ -41,6 +58,15 @@ export default function FirestoreUser() {
                 throw new Error(`${newUser.username} ALREADY EXISTS. PLEASE ENTER A NEW ONE.`);
             await setDoc(userDocRef, newUser);
             await updateProfile({ displayName: newUser.username, photoURL: newUser.profilePhotoUrl });
+            if (selectedFile.length > 0) {
+                const imageRef = ref(storage, `users/${user?.uid}/image`);
+                await uploadString(imageRef, selectedFile, 'data_url');
+                const downloadURL = await getDownloadURL(imageRef);
+                await updateDoc(userDocRef, {
+                    profilePhotoUrl: downloadURL,
+                });
+                await updateProfile({ displayName: newUser.username, photoURL: downloadURL });
+            };
         } catch (error) {
             setErr(error.message);
             return;
@@ -71,16 +97,37 @@ export default function FirestoreUser() {
         marginTop: '20px',
     };
     const introText = 'LETS GET TO KNOW YOU BETTER...';
+    console.log(newUser)
     return (
         <Box sx={boxDesign}>
             <Container>
                 <QuotedLarge />
                 <LandingPageText text={introText} />
             </Container>
+            <Typography
+                        mt={3}
+                    >
+                        UPLOAD IMAGE
+                    </Typography>
+            <IconButton
+                sx={{
+                    borderRadius: '100px',
+                    width: 125,
+                    height: 125,
+                }}
+            >
             <Avatar
-                src={newUser.profilePhotoUrl}
+                src={selectedFile}
                 sx={avatarDesign}
                 alt={newUser.username}
+                onClick={() => selectedFileRef.current.click()}
+            />
+                        </IconButton>
+            <input
+                type="file"
+                hidden
+                ref={selectedFileRef}
+                onChange={onSelectImage}
             />
             <Container>
                 <Box
@@ -100,7 +147,7 @@ export default function FirestoreUser() {
                             type="text"
                             onChange={onChange}
                         />
-                        <TextField
+                        {/* <TextField
                             label="PROFILE PICTURE URL"
                             value={newUser.profilePhotoUrl}
                             fullWidth
@@ -108,15 +155,6 @@ export default function FirestoreUser() {
                             type="url"
                             onChange={onChange}
                             margin="normal"
-                        />
-                        {/* <TextField
-                            label="DESCRIPTION"
-                            value={newUser.description}
-                            fullWidth
-                            name="description"
-                            type="text"
-                            onChange={onChange}
-                            multiline
                         /> */}
                         {err.length > 0 && (
                             <Typography>

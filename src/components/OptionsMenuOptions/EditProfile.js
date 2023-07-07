@@ -1,9 +1,10 @@
-import { Avatar, Box, TextField, Button, Typography, Divider } from "@mui/material";
+import { Avatar, Box, TextField, Button, Typography, Divider, Tooltip, IconButton } from "@mui/material";
 import { useAuthState, useSendPasswordResetEmail, useUpdateEmail, useUpdateProfile } from "react-firebase-hooks/auth";
-import { auth, firestoreDb } from "../../firebase/clientApp";
-import { useContext, useState } from "react";
+import { auth, firestoreDb, storage } from "../../firebase/clientApp";
+import { useContext, useRef, useState } from "react";
 import { PageContext } from "../../context/PageContext";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
 export default function EditProfile() {
     const { setPageNumber } = useContext(PageContext);
@@ -12,12 +13,12 @@ export default function EditProfile() {
     const [updateEmail, emailUpdating, emailError] = useUpdateEmail(auth);
     const [sendPasswordResetEmail, sending, emailPassError] = useSendPasswordResetEmail(auth);
     const [err, setErr] = useState('');
+    const [selectedFile, setSelectedFile] = useState(user.photoURL);
+    const selectedFileRef = useRef(null);
     const [updateUser, setUpdateUser] = useState({
-        id: user.uid,
         email: user.email,
         username: user.displayName,
-        profilePhotoUrl: user.photoURL || "",
-        createdAt: user.metadata.creationTime,
+        profilePhotoUrl: selectedFile,
     });
     const onChange = (e) => {
         setUpdateUser((prev) => ({
@@ -28,16 +29,37 @@ export default function EditProfile() {
     const updateUserProfile = async (e) => {
         e.preventDefault();
         try {
-            if (updateUser.email !== user.email) await updateEmail(updateUser.email);
-            // if (updateUser.password.length > 6) await updatePassword(updateUser.password);
-            await updateProfile({ displayName: updateUser.username, photoURL: updateUser.profilePhotoUrl });
-            const userDocRef = doc(firestoreDb, 'users', updateUser.id);
+            if (updateUser.email !== user.email)
+                await updateEmail(updateUser.email);
+            if (updateUser.username !== user.displayName || updateUser.profilePhotoUrl !== user.photoURL)
+                await updateProfile({ displayName: updateUser.username, photoURL: updateUser.profilePhotoUrl });
+            const userDocRef = doc(firestoreDb, 'users', user.uid);
             await updateDoc(userDocRef, updateUser);
+            if (selectedFile !== user.photoURL && selectedFile.length > 0) {
+                const imageRef = ref(storage, `users/${user.uid}/image`);
+                await uploadString(imageRef, selectedFile, 'data_url');
+                const downloadURL = await getDownloadURL(imageRef);
+                await updateDoc(userDocRef, {
+                    profilePhotoUrl: downloadURL,
+                });
+                await updateProfile({ displayName: updateUser.username, photoURL: downloadURL });
+            };
         } catch (error) {
             setErr(error.message);
             return;
         };
         setPageNumber(2);
+    };
+    const onSelectImage = (e) => {
+        const reader = new FileReader();
+        if (e.target.files?.[0]) {
+            reader.readAsDataURL(e.target.files[0]);
+        }
+        reader.onload = (readerEvent) => {
+            if (readerEvent.target?.result) {
+                setSelectedFile(readerEvent.target.result)
+            }
+        }
     };
     const boxDesign = {
         height: '100vh',
@@ -62,18 +84,43 @@ export default function EditProfile() {
         marginTop: '20px',
         marginBottom: '10px',
     };
-    const actionCodeSettings = {
-        url: 'http://localhost:3000/',
-    };
     return (
         <Box sx={boxDesign}>
             <Typography variant="h5">
                 UPDATE INFORMATION
             </Typography>
-            <Avatar
-                src={updateUser.profilePhotoUrl}
-                sx={avatarDesign}
-                alt={updateUser.username}
+                    <Typography
+                        mt={3}
+                    >
+                        UPLOAD IMAGE
+                    </Typography>
+            <IconButton
+                sx={{
+                    borderRadius: '100px',
+                    width: 150,
+                    height: 150,
+                }}
+            >
+                <Avatar
+                    src={selectedFile}
+                    sx={avatarDesign}
+                    alt={updateUser.username}
+                    onClick={() => selectedFileRef.current.click()}
+                />
+            </IconButton>
+            {/* <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => setSelectedFile('')}
+                mb={2}
+            >
+                REMOVE PHOTO
+            </Button> */}
+            <input
+                type="file"
+                hidden
+                ref={selectedFileRef}
+                onChange={onSelectImage}
             />
             {err.length > 1 && (
                 <Typography>
@@ -90,15 +137,6 @@ export default function EditProfile() {
                     fullWidth
                     name="username"
                     type="text"
-                    onChange={onChange}
-                    margin="normal"
-                />
-                <TextField
-                    label="PROFILE PICTURE URL"
-                    value={updateUser.profilePhotoUrl}
-                    fullWidth
-                    name="profilePhotoUrl"
-                    type="url"
                     onChange={onChange}
                     margin="normal"
                 />
@@ -120,7 +158,7 @@ export default function EditProfile() {
                     size="large"
                     onClick={async () => {
                         try {
-                            await sendPasswordResetEmail(user.email, actionCodeSettings)
+                            await sendPasswordResetEmail(user.email)
                         } catch (error) {
                             setErr(error.message);
                             return;
@@ -130,7 +168,7 @@ export default function EditProfile() {
                     RESET PASSWORD
                 </Button>
                 <Divider
-                    sx={{ fontSize: '10px'}}>
+                    sx={{ fontSize: '10px' }}>
                     EMAIL WILL BE SENT TO RESET PASSWORD
                 </Divider>
                 <Button
