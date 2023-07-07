@@ -7,7 +7,6 @@ import LandingPageText from "@/src/components/LoggedOut/LandingPageText";
 import { LoadingButton } from "@mui/lab";
 import { useRouter } from "next/router";
 import QuotedLarge from "@/src/components/LoggedOut/QuotedLarge";
-import { redirect } from "next/dist/server/api-utils";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
 export default function FirestoreUser() {
