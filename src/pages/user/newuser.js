@@ -147,15 +147,6 @@ export default function FirestoreUser() {
                             type="text"
                             onChange={onChange}
                         />
-                        {/* <TextField
-                            label="PROFILE PICTURE URL"
-                            value={newUser.profilePhotoUrl}
-                            fullWidth
-                            name="profilePhotoUrl"
-                            type="url"
-                            onChange={onChange}
-                            margin="normal"
-                        /> */}
                         {err.length > 0 && (
                             <Typography>
                                 {err}
