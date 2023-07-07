@@ -96,7 +96,8 @@ export default function EditProfile() {
                     </Typography>
             <IconButton
                 sx={{
-                    borderRadius: '100px', width: 150,
+                    borderRadius: '100px',
+                    width: 150,
                     height: 150,
                 }}
             >
@@ -105,7 +106,6 @@ export default function EditProfile() {
                     sx={avatarDesign}
                     alt={updateUser.username}
                     onClick={() => selectedFileRef.current.click()}
-                    button
                 />
             </IconButton>
             {/* <Button
