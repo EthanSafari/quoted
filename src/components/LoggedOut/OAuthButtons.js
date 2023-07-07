@@ -1,5 +1,5 @@
 import { Box, Button, Divider } from "@mui/material";
-import { auth } from "../../firebase/clientApp";
+import { auth, firestoreDb } from "../../firebase/clientApp";
 import { useSignInWithApple, useSignInWithGoogle } from "react-firebase-hooks/auth";
 import GoogleIcon from '@mui/icons-material/Google';
 import AppleIcon from '@mui/icons-material/Apple';
@@ -11,8 +11,10 @@ export default function OAuthButtons() {
     // const [signInWithApple, appleUser, appleLoading, appleError] = useSignInWithApple(auth);
     const [signInWithGoogle, googleUser, googleLoading, googleError] = useSignInWithGoogle(auth);
     useEffect(() => {
-        if (googleUser)
-            router.push('/home');
+        if (googleUser) {
+            createUserDoc(googleUser.user);
+            router.push('/');
+        }
     }, [googleUser]);
     const oauthBoxDesign = {
         display: 'flex',
@@ -23,6 +25,16 @@ export default function OAuthButtons() {
         maxWidth: '220px',
         marginTop: '5px',
         width: '220px'
+    }
+    const createUserDoc = async (user) => {
+        const userDocRef = doc(firestoreDb, 'users', user.uid);
+        await setDoc(userDocRef, {
+            id: user.uid,
+            username: user.displayName,
+            email: user.email,
+            profilePhotoUrl: user.photoURL,
+            createdAt: user.metadata.creationTime,
+        });
     }
     return (
         <Box
