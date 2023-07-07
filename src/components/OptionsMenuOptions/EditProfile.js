@@ -5,6 +5,7 @@ import { useContext, useRef, useState } from "react";
 import { PageContext } from "../../context/PageContext";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { FIREBASE_ERRORS } from "@/src/firebase/errors";
 
 export default function EditProfile() {
     const { setPageNumber } = useContext(PageContext);
@@ -29,6 +30,10 @@ export default function EditProfile() {
     const updateUserProfile = async (e) => {
         e.preventDefault();
         try {
+            if (updateUser.username.trim().length < 5)
+                throw new Error('NEW USERNAMES MUST BE AT LEAST 5 CHARACTERS IN LENGTH');
+            if (updateUser.email.trim().length < 7)
+                throw new Error('PLEASE UPDATE WITH A VALID EMAIL');
             if (updateUser.email !== user.email)
                 await updateEmail(updateUser.email);
             if (updateUser.username !== user.displayName || updateUser.profilePhotoUrl !== user.photoURL)
@@ -89,11 +94,11 @@ export default function EditProfile() {
             <Typography variant="h5">
                 UPDATE INFORMATION
             </Typography>
-                    <Typography
-                        mt={1}
-                    >
-                        UPLOAD IMAGE
-                    </Typography>
+            <Typography
+                mt={1}
+            >
+                UPLOAD IMAGE
+            </Typography>
             <IconButton
                 sx={{
                     borderRadius: '100px',
@@ -122,9 +127,16 @@ export default function EditProfile() {
                 ref={selectedFileRef}
                 onChange={onSelectImage}
             />
-            {err.length > 1 && (
-                <Typography>
-                    {err}
+            {(err.length > 1 || emailError) && (
+                <Typography
+                    align="center"
+                    sx={{
+                        color: 'red',
+                        fontSize: '12px',
+                        marginBottom: '10px'
+                    }}
+                >
+                    {FIREBASE_ERRORS[emailError?.message] || err}
                 </Typography>
             )}
             <form

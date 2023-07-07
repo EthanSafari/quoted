@@ -44,7 +44,6 @@ export default function SignUpPage() {
             createdAt: user.user.metadata.creationTime,
         });
     }
-    console.log('user: ', user?.user)
 
     const signupPageDesign = {
         width: '100vw',
@@ -70,6 +69,7 @@ export default function SignUpPage() {
     const errorText = {
         color: 'red',
         fontSize: '12px',
+        marginBottom: '10px'
     };
     const linkSentance = {
         marginTop: '15px',
@@ -93,12 +93,15 @@ export default function SignUpPage() {
         e.preventDefault();
         try {
             setFormError('');
+            if (signupForm.password.length < 6 || signupForm.password.length > 30)
+                throw new Error('PASSWORDS SHOULD BE BETWEEN 6 AND 30 CHARACTERS IN LENGTH')
             if (signupForm.password !== signupForm.confirmPassword)
                 throw new Error('PASSWORDS DO NOT MATCH');
             await createUserWithEmailAndPassword(signupForm.email, signupForm.password);
-            if (error) throw new Error(FIREBASE_ERRORS[error.message]);
+            if (error)
+                throw new Error(FIREBASE_ERRORS[error.message]);
         } catch (error) {
-            setFormError(error.message);
+            setFormError(FIREBASE_ERRORS[error.message] || error.message);
             return;
         }
         setSignupForm({
@@ -116,13 +119,13 @@ export default function SignUpPage() {
             <Box sx={formDesign}>
                 <FormControl>
                     <form style={formStyle} onSubmit={onSubmit}>
-                        {(formError) && (
+                        {(formError || error) && (
                             <Typography
                                 align="center"
                                 gutterBottom
                                 sx={errorText}
                             >
-                                {formError}
+                                {FIREBASE_ERRORS[error?.message] || formError}
                             </Typography>
                         )}
                         <TextField
@@ -133,6 +136,7 @@ export default function SignUpPage() {
                             name="email"
                             type="email"
                             onChange={onChange}
+                            margin="normal"
                         />
                         <TextField
                             required
@@ -147,6 +151,7 @@ export default function SignUpPage() {
                         />
                         <TextField
                             required
+                            margin="normal"
                             label="CONFIRM PASSWORD"
                             value={signupForm.confirmPassword}
                             fullWidth

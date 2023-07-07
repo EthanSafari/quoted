@@ -47,10 +47,9 @@ export default function FirestoreUser() {
         e.preventDefault();
         setErr('');
         try {
+            if (newUser.username.trim().length < 5)
+                throw new Error('NEW USERNAMES MUST BE AT LEAST 5 CHARACTERS IN LENGTH');
             const userDocRef = doc(firestoreDb, 'users', user.uid);
-            // const userDoc = getDoc(userDocRef);
-            // if ((await userDoc).exists())
-            //     throw new Error(`${newUser.username} ALREADY EXISTS. PLEASE ENTER A NEW ONE.`);
             await updateDoc(userDocRef, newUser);
             await updateProfile({ displayName: newUser.username, photoURL: newUser.profilePhotoUrl });
             if (selectedFile.length > 0) {
@@ -92,7 +91,6 @@ export default function FirestoreUser() {
         marginTop: '20px',
     };
     const introText = 'LETS GET TO KNOW YOU BETTER...';
-    console.log(newUser)
     return (
         <Box sx={boxDesign}>
             <Container>
@@ -143,7 +141,14 @@ export default function FirestoreUser() {
                             onChange={onChange}
                         />
                         {err.length > 0 && (
-                            <Typography>
+                            <Typography
+                            align="center"
+                            sx={{
+                                color: 'red',
+                                fontSize: '12px',
+                                marginBottom: '10px'
+                            }}
+                            >
                                 {err}
                             </Typography>
                         )}

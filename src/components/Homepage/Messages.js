@@ -16,7 +16,7 @@ export default function Messages() {
     // const [messageList, setMessageList] = useState([]);
     // const messageList = Object.values(allMessages).sort((a, b) => new Date(b.createdAt) + new Date(a.createdAt));
     return (
-        <Box mt={8} mb={8} pr={4} pl={4}>
+        <Box mt={8} mb={8} pr={2} pl={2}>
             <List>
                 {allQuotes.map(({ message, createdAt, author }, i) => (
                     <>

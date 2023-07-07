@@ -1,11 +1,9 @@
 import { auth, firestoreDb } from '@/src/firebase/clientApp';
-import { addMessage } from '@/src/store/message';
 import SendOutlinedIcon from '@mui/icons-material/Send';
-import { BottomNavigation, IconButton, TextField, Typography } from "@mui/material";
-import { doc, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore';
+import { BottomNavigation, Box, IconButton, TextField, Typography } from "@mui/material";
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useDispatch } from 'react-redux';
 
 function generateFirestoreId() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -18,7 +16,6 @@ function generateFirestoreId() {
 }
 
 export default function Footer() {
-    const dispatch = useDispatch();
     const [user, loading, error] = useAuthState(auth);
     const [userMessage, setUserMessage] = useState({
         id: generateFirestoreId(),
@@ -32,11 +29,13 @@ export default function Footer() {
         e.preventDefault();
         setErr('');
         try {
+            const trimmedMessage = userMessage.message.trim();
+            if (trimmedMessage.length < 10 || trimmedMessage.length > 100)
+                throw new Error('QUOTES MUST BE BETWEEN 10 AND 100 CHARACTERS IN LENGTH');
             const messageDocRef = doc(firestoreDb, "messages", userMessage.id);
             await setDoc(messageDocRef, userMessage);
             // dispatch(addMessage(userMessage));
         } catch (error) {
-            console.log(error)
             setErr(error.message)
             return;
         };
@@ -77,31 +76,59 @@ export default function Footer() {
             sx={footerDesign}
         >
             {err.length > 0 && (
-                <Typography>
+                <Typography
+                    align="center"
+                    sx={{
+                        color: 'red',
+                        fontSize: '12px',
+                        marginBottom: '10px'
+                    }}
+                >
                     {err}
                 </Typography>
             )}
-            <form
-                onSubmit={sendNewMessage}
+            <Box
             >
-                <TextField
-                    label="Care to Share?"
-                    multiline
-                    sx={textboxDesign}
-                    value={userMessage.message}
-                    name='message'
-                    onChange={onChange}
-                />
-                <IconButton
-                    color='secondary'
-                    type='submit'
+                <form
+                    onSubmit={sendNewMessage}
+                    style={{
+                        display: 'flex',
+                    }}
                 >
-                    <SendOutlinedIcon
-                        fontSize='large'
-                        sx={sendButtonDesign}
+                    <TextField
+                        label="Care to Share?"
+                        multiline
+                        sx={textboxDesign}
+                        value={userMessage.message}
+                        name='message'
+                        onChange={onChange}
                     />
-                </IconButton>
-            </form>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                        }}
+                    >
+                        <IconButton
+                            color='secondary'
+                            type='submit'
+                            sx={{
+                                paddingBottom: 0
+                            }}
+                        >
+                            <SendOutlinedIcon
+                                fontSize='large'
+                                sx={sendButtonDesign}
+                            />
+                        </IconButton>
+                        <Typography
+                            align='center'
+                        >
+                            {userMessage.message.trim().length}
+                        </Typography>
+                    </Box>
+                </form>
+            </Box>
         </BottomNavigation>
     );
 }

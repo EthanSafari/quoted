@@ -47,7 +47,6 @@ export default function UserMessages() {
                 createdAt: ''
             });
         } catch (error) {
-            console.log(error);
             setErr(error.message);
             return;
         }
@@ -56,9 +55,11 @@ export default function UserMessages() {
         e.preventDefault();
         setErr('');
         try {
+            const trimmedMessage = selectedQuote.message.trim();
+            if (trimmedMessage.length < 10 || trimmedMessage.length > 100)
+                throw new Error('QUOTES MUST BE BETWEEN 10 AND 100 CHARACTERS IN LENGTH');
             const selectedQuoteRef = doc(firestoreDb, 'messages', selectedQuote.id);
             await updateDoc(selectedQuoteRef, selectedQuote);
-            // dispatch(updateMessage(selectedQuote));
             setEditOptions(false);
         } catch (error) {
             console.log(error);
@@ -112,9 +113,9 @@ export default function UserMessages() {
                             setSelectedIndex(selectedIndex !== i ? i : null);
                             setSelectedQuote(message);
                         }}
-                        >
+                    >
                         <ListItemText
-                        sx={{ padding: '5px 10px'}}
+                            sx={{ padding: '5px 10px' }}
                             primary={`"${message.message}"`}
                             secondary={new Date(message.createdAt).toDateString()}
                         />
@@ -134,15 +135,15 @@ export default function UserMessages() {
                         }}
                     >
                         {
-                        selectedQuote.message.length > 0 ?
-                        selectedQuote.message : (
-                            <Typography
-                            color={'warning'}
-                            >
+                            selectedQuote.message.length > 0 ?
+                                selectedQuote.message : (
+                                    <Typography
+                                        color={'warning'}
+                                    >
 
-                        NEW QUOTE CANNOT BE LEFT BLANK
-                        </Typography>
-                        )
+                                        NEW QUOTE CANNOT BE LEFT BLANK
+                                    </Typography>
+                                )
                         }
                     </Typography>
                     <ButtonGroup
@@ -161,7 +162,10 @@ export default function UserMessages() {
                         {!updateQuote &&
                             <Button
                                 color="warning"
-                                onClick={() => setDeleteQuote(!deleteQuote)}
+                                onClick={() => {
+                                    setErr('');
+                                    setDeleteQuote(!deleteQuote);
+                                }}
                             >
                                 DELETE
                             </Button>
@@ -172,12 +176,22 @@ export default function UserMessages() {
                             sx={editBoxDesign}
                         >
                             {err.length > 0 && (
-                                <Typography>
+                                <Typography
+                                    align="center"
+                                    sx={{
+                                        color: 'red',
+                                        fontSize: '12px',
+                                        marginBottom: '10px'
+                                    }}
+                                >
                                     {err}
                                 </Typography>
                             )}
                             <form
                                 onSubmit={updateSelectedQuote}
+                                style={{
+                                    display: 'flex',
+                                }}
                             >
                                 <TextField
                                     label="Want to Update?"
@@ -187,14 +201,29 @@ export default function UserMessages() {
                                     name='message'
                                     onChange={onChange}
                                 />
-                                <Button
-                                    color='secondary'
-                                    type='submit'
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                    }}
                                 >
-                                    <EditNoteIcon
-                                        fontSize='large'
-                                    />
-                                </Button>
+                                    <Button
+                                        color='secondary'
+                                        type='submit'
+                                        sx={{
+                                            paddingBottom: 0
+                                        }}
+                                    >
+                                        <EditNoteIcon
+                                            fontSize='large'
+                                        />
+                                    </Button>
+                                    <Typography
+                                        align='center'
+                                    >
+                                        {selectedQuote.message.trim().length}
+                                    </Typography>
+                                </Box>
                             </form>
                         </Box>
                     }
@@ -212,7 +241,14 @@ export default function UserMessages() {
                                 ARE YOU SURE YOU WANT TO DELETE THIS QUOTE?
                             </Typography>
                             {err.length > 0 && (
-                                <Typography>
+                                <Typography
+                                    align="center"
+                                    sx={{
+                                        color: 'red',
+                                        fontSize: '12px',
+                                        marginBottom: '10px'
+                                    }}
+                                >
                                     {err}
                                 </Typography>
                             )}
