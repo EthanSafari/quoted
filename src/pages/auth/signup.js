@@ -93,6 +93,8 @@ export default function SignUpPage() {
         e.preventDefault();
         try {
             setFormError('');
+            if (signupForm.email.trim().length < 7)
+                throw new Error('PLEASE ENTER A VALID EMAIL');
             if (signupForm.password.length < 6 || signupForm.password.length > 30)
                 throw new Error('PASSWORDS SHOULD BE BETWEEN 6 AND 30 CHARACTERS IN LENGTH')
             if (signupForm.password !== signupForm.confirmPassword)
