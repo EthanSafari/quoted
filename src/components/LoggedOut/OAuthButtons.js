@@ -5,6 +5,7 @@ import GoogleIcon from '@mui/icons-material/Google';
 import AppleIcon from '@mui/icons-material/Apple';
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export default function OAuthButtons() {
     const router = useRouter();
@@ -13,7 +14,6 @@ export default function OAuthButtons() {
     useEffect(() => {
         if (googleUser) {
             createUserDoc(googleUser.user);
-            router.push('/');
         }
     }, [googleUser]);
     const oauthBoxDesign = {
@@ -28,13 +28,23 @@ export default function OAuthButtons() {
     }
     const createUserDoc = async (user) => {
         const userDocRef = doc(firestoreDb, 'users', user.uid);
-        await setDoc(userDocRef, {
-            id: user.uid,
-            username: user.displayName,
-            email: user.email,
-            profilePhotoUrl: user.photoURL,
-            createdAt: user.metadata.creationTime,
-        });
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+            console.log({message: 'User already exists. Logging in registered user.'});
+            router.push('/');
+            return;
+        } else {
+            await setDoc(userDocRef, {
+                id: user.uid,
+                username: user.displayName,
+                email: user.email,
+                profilePhotoUrl: user.photoURL,
+                createdAt: user.metadata.creationTime,
+            });
+            console.log({message: 'User does not exist. Creating new user.'})
+            router.push('/');
+            return;
+        };
     }
     return (
         <Box
@@ -53,7 +63,6 @@ export default function OAuthButtons() {
             <Button
                 variant="contained"
                 color="secondary"
-                sizeLarge
                 sx={buttonDesign}
                 onClick={() => {
                     signInWithGoogle();

@@ -1,4 +1,5 @@
 import LandingPageText from "@/src/components/LoggedOut/LandingPageText";
+import OAuthButtons from "@/src/components/LoggedOut/OAuthButtons";
 import QuotedLarge from "@/src/components/LoggedOut/QuotedLarge";
 import { auth } from "@/src/firebase/clientApp";
 import { FIREBASE_ERRORS } from "@/src/firebase/errors";
@@ -126,6 +127,7 @@ export default function LoginPage() {
                             LOG IN
                         </LoadingButton>
                         )}
+                        <OAuthButtons />
                         <Typography align="center" sx={linkSentance}>
                             DONT HAVE AN ACCOUNT?
                         </Typography>

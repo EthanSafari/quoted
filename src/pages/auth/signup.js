@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import OAuthButtons from "@/src/components/LoggedOut/OAuthButtons";
 
 export default function SignUpPage() {
     const dispatch = useDispatch();
@@ -180,6 +181,7 @@ export default function SignUpPage() {
                         )}
                     </form>
                 </FormControl>
+            <OAuthButtons />
                 <Typography align="center" sx={linkSentance}>
                     HAVE AN ACCOUNT?
                 </Typography>
