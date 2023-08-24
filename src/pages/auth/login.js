@@ -127,7 +127,7 @@ export default function LoginPage() {
                             LOG IN
                         </LoadingButton>
                         )}
-                        <OAuthButtons />
+                        // <OAuthButtons />
                         <Typography align="center" sx={linkSentance}>
                             DONT HAVE AN ACCOUNT?
                         </Typography>
