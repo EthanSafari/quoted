@@ -181,7 +181,7 @@ export default function SignUpPage() {
                         )}
                     </form>
                 </FormControl>
-            <OAuthButtons />
+            // <OAuthButtons />
                 <Typography align="center" sx={linkSentance}>
                     HAVE AN ACCOUNT?
                 </Typography>
